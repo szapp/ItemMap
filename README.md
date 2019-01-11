@@ -29,7 +29,7 @@ You can find the original Ninja Patch Template repository at
 [szapp/NinjaPatchTemplate](https://github.com/szapp/NinjaPatchTemplate).
 
 The repository supplies the skeleton for Ninja patches and aids in creating them. To get going, it's best to **fork**
-the [original repository](https://github.com/szapp/NinjaPatchTemplate), run the file ```init.bat``` and follow the
+the [original repository](https://github.com/szapp/NinjaPatchTemplate), run the file `init.bat` and follow the
 instructions.
 
 For more information on the Ninja patching framework visit the [documentation](https://tiny.cc/GothicNinja).
