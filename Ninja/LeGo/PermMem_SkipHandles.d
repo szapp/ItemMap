@@ -9,7 +9,6 @@ func int _PM_SkipHandle(var int key, var int val) {
     var string instName; instName = _PM_InstName(inst);
     var string className; className = symbClass.name;
     if (!STR_Compare(instName, "FFITEM@")) {
-        MEM_Info("FFItem");
         var FFItem ff; ff = get(key);
         symbID = MEM_GetFuncIDByOffset(ff.fncID - currParserStackAddress);
         if (symbID > Ninja_Symbols_Start) {
@@ -18,7 +17,6 @@ func int _PM_SkipHandle(var int key, var int val) {
             return TRUE;
         };
     } else if (!STR_Compare(instName, "A8HEAD@")) {
-        MEM_Info("A8Head");
         var A8Head a8; a8 = get(key);
         if (a8.fnc) {
             symbID = MEM_GetFuncIDByOffset(a8.fnc - currParserStackAddress);
@@ -37,7 +35,6 @@ func int _PM_SkipHandle(var int key, var int val) {
             };
         };
     } else if (!STR_Compare(instName, "_BUTTON@")) {
-        MEM_Info("_Button");
         var _Button bt; bt = get(key);
         if (bt.on_enter > Ninja_Symbols_Start)
         || (bt.on_leave > Ninja_Symbols_Start)
@@ -61,7 +58,6 @@ func int _PM_SkipHandle(var int key, var int val) {
             return TRUE;
         };
     } else if (!STR_Compare(className, "LCBUFF")) {
-        MEM_Info("lCBuff");
         var lCBuff bf; bf = get(key);
         if (bf.OnApply > Ninja_Symbols_Start)
         || (bf.OnTick > Ninja_Symbols_Start)
