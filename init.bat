@@ -578,7 +578,6 @@ IF "%ANIMATION%" GTR "0" (
 
 ECHO Write VDFS VM script
 (ECHO [BEGINVDF])>                                                            "%~dp0Ninja_%NAME%.vm" || GOTO ERR
-(ECHO ; The mention of the Ninja version used is very important!)>>           "%~dp0Ninja_%NAME%.vm" || GOTO ERR
 (ECHO Comment=%SHORT_DESCR%%%%%NNinja ^<http://tiny.cc/GothicNinja^>)>>       "%~dp0Ninja_%NAME%.vm" || GOTO ERR
 (ECHO VDFName=.\Ninja_%NAME%.vdf)>>                                           "%~dp0Ninja_%NAME%.vm" || GOTO ERR
 (ECHO/)>>                                                                     "%~dp0Ninja_%NAME%.vm" || GOTO ERR
