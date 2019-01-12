@@ -104,9 +104,10 @@ ECHO Description
 ECHO -----------
 ECHO Please supply a brief sentence describing the patch. It serves
 ECHO as basic information for players in the ingame console and in-
-ECHO side the VDF. Maximum length is 250 characters. Characters like
-ECHO ^<, ^( and ^>, ^) need to be escaped ^(with ^^^). You may use %%%%N for
-ECHO line breaks. No more than three lines are supported.
+ECHO side the VDF. Maximum length is 250 characters. Illegal char-
+ECHO acters: ^>^<^|^&
+ECHO You may use %%%%N for line breaks. No more than three lines are
+ECHO supported.
 ECHO/
 
 :PROMPT_SHORT_DESCR
@@ -117,6 +118,13 @@ IF "%SHORT_DESCR%" == "" (
     ECHO/
     GOTO PROMPT_SHORT_DESCR
 )
+ECHO "%SHORT_DESCR%"| findstr /R "[><|&]" > NUL && (
+    ECHO Input contains illegal characters: ^>^<^|^&
+    ECHO/
+    GOTO PROMPT_SHORT_DESCR
+)
+SET SHORT_DESCR=%SHORT_DESCR:(=^^^(%
+SET SHORT_DESCR=%SHORT_DESCR:)=^^^)%
 :: Get length of description
 SET DESC_LEN=0
 SET NAME_TMP=%SHORT_DESCR%
