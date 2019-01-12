@@ -578,7 +578,7 @@ IF "%ANIMATION%" GTR "0" (
     (ECHO     aniEnum)>>                                                      "%ANIMF%" || GOTO ERR
     (ECHO     {)>>                                                            "%ANIMF%" || GOTO ERR
     (ECHO/)>>                                                                 "%ANIMF%" || GOTO ERR
-    (ECHO         ^/^/ Add NEW ANIMATIONS HERE)>>                             "%ANIMF%" || GOTO ERR
+    (ECHO         ^/^/ ADD NEW ANIMATIONS HERE)>>                             "%ANIMF%" || GOTO ERR
     (ECHO/)>>                                                                 "%ANIMF%" || GOTO ERR
     (ECHO     })>>                                                            "%ANIMF%" || GOTO ERR
     (ECHO })>>                                                                "%ANIMF%" || GOTO ERR
