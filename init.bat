@@ -3,6 +3,9 @@
 SET PAGE=0
 SET PAGES_MAX=4
 
+TITLE New Patch with Ninja
+MODE CON:COLS=64 LINES=52
+
 CALL :SHOWHEADER
 ECHO Patch Properties
 ECHO ================
@@ -375,6 +378,7 @@ ECHO/
 SET CAMERA=
 SET /P CAMERA="Please choose (0/1/2/3): "
 IF "%CAMERA%" == ""  SET CAMERA=0 && GOTO CAMERA_CONT
+IF "%CAMERA%" == "0" GOTO CAMERA_CONT
 IF "%CAMERA%" == "1" GOTO CAMERA_CONT
 IF "%CAMERA%" == "2" GOTO CAMERA_CONT
 IF "%CAMERA%" == "3" GOTO CAMERA_CONT
@@ -545,8 +549,6 @@ ECHO Write VDFS VM script
 (ECHO VDFName=.\%NAME%.vdf)>>                                                 "%~dp0%NAME%.vm" || GOTO ERR
 (ECHO/)>>                                                                     "%~dp0%NAME%.vm" || GOTO ERR
 (ECHO [FILES])>>                                                              "%~dp0%NAME%.vm" || GOTO ERR
-(ECHO README_%NAME%.md)>>                                                     "%~dp0%NAME%.vm" || GOTO ERR
-(ECHO/)>>                                                                     "%~dp0%NAME%.vm" || GOTO ERR
 (ECHO ; Resources ^(list the specific files from _work here^))>>              "%~dp0%NAME%.vm" || GOTO ERR
 (ECHO ; _work\* -r)>>                                                         "%~dp0%NAME%.vm" || GOTO ERR
 (ECHO/)>>                                                                     "%~dp0%NAME%.vm" || GOTO ERR
@@ -627,11 +629,6 @@ IF "%IKARUS%" == "y" (
         ECHO    It is important to try various mods that ^[don't^] use Ikarus!
     )
 )
-ECHO/
-ECHO %ITER%. Keep the Patch up to Date
-SET /A ITER+=1
-ECHO    Watch closely for new versions of Ninja and update your
-ECHO    patch accordingly!
 ECHO/
 
 :QUIT
