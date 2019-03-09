@@ -5,6 +5,7 @@ SET PAGES_MAX=4
 
 TITLE New Patch with Ninja
 MODE CON:COLS=64 LINES=52
+SET "TAB=	"
 
 CALL :SHOWHEADER
 ECHO Patch Properties
@@ -508,14 +509,42 @@ CALL :MAKE_SRC Camera %CAMERA%
 
 IF "%OU%" GTR "0" (
     IF "%OU%" == "3" (
-        ECHO Create empty output unit files
-        COPY /Y NUL "%~dp0Ninja\%NAME%\OU.csl" > NUL || GOTO ERR
-        COPY /Y NUL "%~dp0Ninja\%NAME%\OU.bin" > NUL || GOTO ERR
+        SET OUF="%~dp0Ninja\%NAME%\OU.csl"
+        ECHO Create empty output unit file
     ) ELSE (
-        ECHO Create empty output unit files ^(G%OU%^)
-        COPY /Y NUL "%~dp0Ninja\%NAME%\OU_G%OU%.csl" > NUL || GOTO ERR
-        COPY /Y NUL "%~dp0Ninja\%NAME%\OU_G%OU%.bin" > NUL || GOTO ERR
+        SET OUF="%~dp0Ninja\%NAME%\OU_G%OU%.csl"
+        ECHO Create empty output unit file ^(G%OU%^)
     )
+)
+:: Separate IF because of delayed extension
+IF "%OU%" GTR "0" (
+    (ECHO ZenGin Archive)>                                                    "%OUF%" || GOTO ERR
+    (ECHO ver 1)>>                                                            "%OUF%" || GOTO ERR
+    (ECHO zCArchiverGeneric)>>                                                "%OUF%" || GOTO ERR
+    (ECHO ASCII)>>                                                            "%OUF%" || GOTO ERR
+    (ECHO saveGame 0)>>                                                       "%OUF%" || GOTO ERR
+    (ECHO date 01/01/1970 00:00:00 AM)>>                                      "%OUF%" || GOTO ERR
+    (ECHO user Ninja)>>                                                       "%OUF%" || GOTO ERR
+    (ECHO END)>>                                                              "%OUF%" || GOTO ERR
+    (ECHO objects 4)>>                                                        "%OUF%" || GOTO ERR
+    (ECHO END)>>                                                              "%OUF%" || GOTO ERR
+    (ECHO/)>>                                                                 "%OUF%" || GOTO ERR
+    (ECHO [%% zCCSLib 0 0])>>                                                 "%OUF%" || GOTO ERR
+    (ECHO %TAB%NumOfItems=int:1)>>                                            "%OUF%" || GOTO ERR
+    (ECHO %TAB%[%% zCCSBlock 0 1])>>                                          "%OUF%" || GOTO ERR
+    (ECHO %TAB%%TAB%blockName=string:NINJA_NONE_15_01)>>                      "%OUF%" || GOTO ERR
+    (ECHO %TAB%%TAB%numOfBlocks=int:1)>>                                      "%OUF%" || GOTO ERR
+    (ECHO %TAB%%TAB%subBlock0=float:0)>>                                      "%OUF%" || GOTO ERR
+    (ECHO %TAB%%TAB%[%% zCCSAtomicBlock 0 2])>>                               "%OUF%" || GOTO ERR
+    (ECHO %TAB%%TAB%%TAB%[%% oCMsgConversation:oCNpcMessage:^
+zCEventMessage 0 3])>>                                                        "%OUF%" || GOTO ERR
+    (ECHO %TAB%%TAB%%TAB%%TAB%subType=enum:0)>>                               "%OUF%" || GOTO ERR
+    (ECHO %TAB%%TAB%%TAB%%TAB%text=string:Dialog line shown in-game)>>        "%OUF%" || GOTO ERR
+    (ECHO %TAB%%TAB%%TAB%%TAB%name=string:NINJA_NONE_15_01.WAV)>>             "%OUF%" || GOTO ERR
+    (ECHO %TAB%%TAB%%TAB%[])>>                                                "%OUF%" || GOTO ERR
+    (ECHO %TAB%%TAB%[])>>                                                     "%OUF%" || GOTO ERR
+    (ECHO %TAB%[])>>                                                          "%OUF%" || GOTO ERR
+    (ECHO [])>>                                                               "%OUF%" || GOTO ERR
 )
 
 IF "%ANIMATION%" GTR "0" (
