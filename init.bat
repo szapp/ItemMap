@@ -680,13 +680,13 @@ IF NOT EXIST "%~dp0Ninja\%NAME%\Content" (
 
 IF "%IKARUS%" == "y" (
     ECHO Write content SRC ^(G%1^)
-    (ECHO Ikarus)>                                                            "%~dp0Ninja\%NAME%\Content_G%1.src" || GOTO ERR
+    (ECHO Ikarus)>                                                   "%~dp0Ninja\%NAME%\Content_G%1.src" || GOTO ERR
     IF "%LEGO%" == "y" (
-        (ECHO LeGo)>>                                                         "%~dp0Ninja\%NAME%\Content_G%1.src" || GOTO ERR
+        (ECHO LeGo)>>                                                "%~dp0Ninja\%NAME%\Content_G%1.src" || GOTO ERR
     )
-    (ECHO/)>>                                                                 "%~dp0Ninja\%NAME%\Content_G%1.src" || GOTO ERR
-    (ECHO // LIST YOUR FILES HERE)>>                                          "%~dp0Ninja\%NAME%\Content_G%1.src" || GOTO ERR
-    (ECHO/)>>                                                                 "%~dp0Ninja\%NAME%\Content_G%1.src" || GOTO ERR
+    (ECHO/)>>                                                        "%~dp0Ninja\%NAME%\Content_G%1.src" || GOTO ERR
+    (ECHO // LIST YOUR FILES HERE)>>                                 "%~dp0Ninja\%NAME%\Content_G%1.src" || GOTO ERR
+    (ECHO/)>>                                                        "%~dp0Ninja\%NAME%\Content_G%1.src" || GOTO ERR
 ) ELSE (
     ECHO Create empty content SRC ^(G%1^)
     COPY /Y NUL "%~dp0Ninja\%NAME%\Content_G%1.src" > NUL || GOTO ERR
@@ -697,11 +697,11 @@ EXIT /B 0
 
 :INIT_D
 IF NOT "%IKARUS%" == "y" (
-    (ECHO/)>>                                                                 "%~dp0Ninja\%NAME%\Content_G%1.src" || GOTO ERR
-    (ECHO // LIST YOUR FILES HERE)>>                                          "%~dp0Ninja\%NAME%\Content_G%1.src" || GOTO ERR
-    (ECHO/)>>                                                                 "%~dp0Ninja\%NAME%\Content_G%1.src" || GOTO ERR
+    (ECHO/)>>                                                        "%~dp0Ninja\%NAME%\Content_G%1.src" || GOTO ERR
+    (ECHO // LIST YOUR FILES HERE)>>                                 "%~dp0Ninja\%NAME%\Content_G%1.src" || GOTO ERR
+    (ECHO/)>>                                                        "%~dp0Ninja\%NAME%\Content_G%1.src" || GOTO ERR
 )
-(ECHO Content\NinjaInit.d)>>                                                  "%~dp0Ninja\%NAME%\Content_G%1.src" || GOTO ERR
+(ECHO Content\NinjaInit.d)>>                                         "%~dp0Ninja\%NAME%\Content_G%1.src" || GOTO ERR
 IF NOT EXIST "%~dp0Ninja\%NAME%\Content\NinjaInit.d" (
     ECHO Create empty content init file
     COPY /Y NUL "%~dp0Ninja\%NAME%\Content\NinjaInit.d" > NUL || GOTO ERR
@@ -709,45 +709,46 @@ IF NOT EXIST "%~dp0Ninja\%NAME%\Content\NinjaInit.d" (
 IF "%INIT_MENU%" == "y" (
     IF NOT DEFINED CONTENT_ONCE (
         ECHO Write content init file
-        (ECHO /*)>>                                                           "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
-        (ECHO  * Menu initialization function called by Ninja every time a ^
-menu is opened)>>                                                             "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
-        (ECHO  */)>>                                                          "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
-        (ECHO func void Ninja_%NAME%_Menu^(var int menuPtr^) {)>>             "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
+        (ECHO /*)>>                                                  "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
+        (ECHO  * Menu initialization function called by Ninja every ^
+time a menu is opened)>>                                             "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
+        (ECHO  */)>>                                                 "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
+        (ECHO func void Ninja_%NAME%_Menu^(var int menuPtr^) {)>>    "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
         IF "%IKARUS%" == "y" (
-            (ECHO     MEM_InitAll^(^);)>>                                     "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
-            (ECHO/)>>                                                         "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
+            (ECHO     MEM_InitAll^(^);)>>                            "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
+            (ECHO/)>>                                                "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
         )
-        (ECHO/)>>                                                             "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
-        (ECHO     // WRITE YOUR INITIALIZATIONS HERE)>>                       "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
-        (ECHO/)>>                                                             "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
-        (ECHO };)>>                                                           "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
-        (ECHO/)>>                                                             "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
-        (ECHO/)>>                                                             "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
+        (ECHO/)>>                                                    "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
+        (ECHO     // WRITE YOUR INITIALIZATIONS HERE)>>              "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
+        (ECHO/)>>                                                    "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
+        (ECHO };)>>                                                  "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
+        (ECHO/)>>                                                    "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
+        (ECHO/)>>                                                    "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
     )
 )
 IF "%INIT_CONTENT%" == "y" (
     IF NOT DEFINED CONTENT_ONCE (
-        (ECHO /*)>>                                                           "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
-        (ECHO  * Initialization function called by Ninja after "Init_Global" ^(^
-G2^) / "Init_<Levelname>" ^(G1^))>>                                           "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
-        (ECHO  */)>>                                                          "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
-        (ECHO func void Ninja_%NAME%_Init^(^) {)>>                            "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
+        (ECHO /*)>>                                                  "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
+        (ECHO  * Initialization function called by Ninja ^
+after "Init_Global" ^(G2^) / "Init_<Levelname>" ^(G1^))>>            "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
+        (ECHO  */)>>                                                 "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
+        (ECHO func void Ninja_%NAME%_Init^(^) {)>>                   "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
         IF "%LEGO%" == "y" (
-            (ECHO     // Wrapper for "LeGo_Init" to ensure correct LeGo ^
-initialization without breaking the mod)>>                                    "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
-            (ECHO     LeGo_MergeFlags^( /* DESIRED LEGO PACKAGES */ ^);)>>    "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
-            (ECHO/)>>                                                         "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
+            (ECHO     // Wrapper for "LeGo_Init" to ensure correct ^
+LeGo initialization without breaking the mod)>>                      "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
+            (ECHO     LeGo_MergeFlags^( /* DESIRED LEGO PACKAGES ^
+*/ ^);)>>                                                            "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
+            (ECHO/)>>                                                "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
         ) ELSE (
             IF "%IKARUS%" == "y" (
-                (ECHO     MEM_InitAll^(^);)>>                                 "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
-                (ECHO/)>>                                                     "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
+                (ECHO     MEM_InitAll^(^);)>>                        "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
+                (ECHO/)>>                                            "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
             )
         )
-        (ECHO/)>>                                                             "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
-        (ECHO     // WRITE YOUR INITIALIZATIONS HERE)>>                       "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
-        (ECHO/)>>                                                             "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
-        (ECHO };)>>                                                           "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
+        (ECHO/)>>                                                    "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
+        (ECHO     // WRITE YOUR INITIALIZATIONS HERE)>>              "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
+        (ECHO/)>>                                                    "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
+        (ECHO };)>>                                                  "%~dp0Ninja\%NAME%\Content\NinjaInit.d" || GOTO ERR
     )
 )
 SET CONTENT_ONCE=1
