@@ -774,21 +774,15 @@ EXIT /B 0
 :SHOWHEADER
 SET /A PAGE+=1
 CLS
-ECHO/
-ECHO ================================================================
-ECHO/
+ECHO ________________________________________________________________
 ECHO                       New Patch with Ninja
 ECHO/
-ECHO  This process will take you through the first steps of creating
-ECHO  a new patch from the patch template. It is advised to be fami-
-ECHO  liar with the Ninja documentation or have it ready alongside
-ECHO  this initialization to resolve any questions. You can find it
+ECHO  This script will aid you in setting up a new patch. You should
+ECHO  be familiar with the documentation of Ninja, that is available
 ECHO  at ^<http://tiny.cc/GothicNinja^>. You may abort this process at
 ECHO  any time by pressing CTRL+C or by closing this command window.
 ECHO/
-ECHO                            PAGE %PAGE%/%PAGES_MAX%
-ECHO/
-ECHO ================================================================
-ECHO/
+ECHO                             PAGE %PAGE%/%PAGES_MAX%
+ECHO ________________________________________________________________
 ECHO/
 EXIT /B 0
