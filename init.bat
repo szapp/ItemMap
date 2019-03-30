@@ -104,26 +104,22 @@ IF %DESC_LEN% GEQ 250 (
 ::=============================================== PAGE BREAK =========================================================::
 
 CALL :SHOWHEADER
-ECHO Assign Ninjas (SRC Files)
-ECHO =========================
+ECHO Changes to Inject
+ECHO =================
 ECHO/
-ECHO A patch deploys different ninjas that infiltrate the game to
-ECHO inject changes. There is one ninja for each type of parser.
-ECHO Each of them follows an SRC file (exceptions: ani and OU).
+ECHO A patch can change various resources (see documentation). Here
+ECHO you may choose which resources you want to change.
 ECHO/
 ECHO Because, by default, patches are compatible with both Gothic 1
-ECHO and Gothic 2, you can have (for each ninja) a single SRC file
-ECHO used for both games or separate SRC files for each game.
-ECHO/
-ECHO Below, choose the ninjas you need (i.e. SRC files).
+ECHO and Gothic 2, you can choose to make changes to both games or
+ECHO separate changes for each game; for each resource.
 ECHO/
 ECHO/
 
 ::--------------------------------------------------------------------------------------------------------------------::
 
-ECHO Content Ninja
-ECHO -------------
-ECHO This ninja enables changes in the content scripts.
+ECHO Content Scripts
+ECHO ---------------
 ECHO/
 ECHO 0) Not needed
 ECHO 1) Gothic 1
@@ -230,9 +226,8 @@ GOTO PROMPT_INIT_MENU
 
 ECHO/
 ECHO/
-ECHO Menu Ninja
-ECHO ----------
-ECHO This ninja enables changes in the menu scripts.
+ECHO Menu Scritps
+ECHO ------------
 ECHO/
 ECHO 0) Not needed
 ECHO 1) Gothic 1
@@ -257,9 +252,8 @@ GOTO PROMPT_MENU
 
 ECHO/
 ECHO/
-ECHO PFX Ninja
-ECHO ---------
-ECHO This ninja enables changes in the particle FX scripts.
+ECHO Particle FX Scripts
+ECHO -------------------
 ECHO/
 ECHO 0) Not needed
 ECHO 1) Gothic 1
@@ -284,9 +278,8 @@ GOTO PROMPT_PFX
 
 ECHO/
 ECHO/
-ECHO VFX Ninja
-ECHO ---------
-ECHO This ninja enables changes in the visual FX scripts.
+ECHO Visual FX Scripts
+ECHO -----------------
 ECHO/
 ECHO 0) Not needed
 ECHO 1) Gothic 1
@@ -311,9 +304,8 @@ GOTO PROMPT_VFX
 
 ECHO/
 ECHO/
-ECHO SFX Ninja
-ECHO ---------
-ECHO This ninja enables changes in the sound FX scripts.
+ECHO Sound FX Scripts
+ECHO ----------------
 ECHO/
 ECHO 0) Not needed
 ECHO 1) Gothic 1
@@ -338,9 +330,8 @@ GOTO PROMPT_SFX
 
 ECHO/
 ECHO/
-ECHO Music Ninja
-ECHO -----------
-ECHO This ninja enables changes in the music scripts.
+ECHO Music Scripts
+ECHO -------------
 ECHO/
 ECHO 0) Not needed
 ECHO 1) Gothic 1
@@ -365,9 +356,8 @@ GOTO PROMPT_MUSIC
 
 ECHO/
 ECHO/
-ECHO Camera Ninja
-ECHO ------------
-ECHO This ninja enables changes in the camera scripts.
+ECHO Camera Scripts
+ECHO --------------
 ECHO/
 ECHO 0) Not needed
 ECHO 1) Gothic 1
@@ -392,9 +382,8 @@ GOTO PROMPT_CAMERA
 
 ECHO/
 ECHO/
-ECHO Fight AI Ninja
-ECHO --------------
-ECHO This ninja enables changes in the fight AI scripts.
+ECHO Fight AI Scripts
+ECHO ----------------
 ECHO/
 ECHO 0) Not needed
 ECHO 1) Gothic 1
@@ -419,9 +408,8 @@ GOTO PROMPT_FIGHT
 
 ECHO/
 ECHO/
-ECHO Output Unit Ninja
-ECHO -----------------
-ECHO This ninja enables changes in the output units (dialogs).
+ECHO Output Units (Dialog Lines)
+ECHO ---------------------------
 ECHO/
 ECHO 0) Not needed
 ECHO 1) Gothic 1
@@ -446,9 +434,8 @@ GOTO PROMPT_OU
 
 ECHO/
 ECHO/
-ECHO Animation Ninja
-ECHO ---------------
-ECHO This ninja enables changes in the animations.
+ECHO Animations
+ECHO ----------
 ECHO/
 ECHO 0) Not needed
 ECHO 1) Gothic 1
