@@ -4,7 +4,7 @@ SET PAGE=0
 SET PAGES_MAX=4
 
 TITLE New Patch with Ninja
-MODE CON:COLS=64 LINES=52
+MODE CON:COLS=64 LINES=50
 SET "TAB=	"
 
 CALL :SHOWHEADER
@@ -562,6 +562,7 @@ IF "%ANIMATION%" GTR "0" (
 ECHO Write VDFS VM script
 (ECHO [BEGINVDF])>                                                            "%~dp0%NAME%.vm" || GOTO ERR
 (ECHO Comment=%SHORT_DESCR%)>>                                                "%~dp0%NAME%.vm" || GOTO ERR
+(ECHO BaseDir=.\)>>                                                           "%~dp0%NAME%.vm" || GOTO ERR
 (ECHO VDFName=.\%NAME%.vdf)>>                                                 "%~dp0%NAME%.vm" || GOTO ERR
 (ECHO/)>>                                                                     "%~dp0%NAME%.vm" || GOTO ERR
 (ECHO [FILES])>>                                                              "%~dp0%NAME%.vm" || GOTO ERR
