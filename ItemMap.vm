@@ -1,0 +1,21 @@
+[BEGINVDF]
+Comment=This patch marks all items in the world on the map (Gothic 1 and Gothic 2 NotR)
+BaseDir=.\
+VDFName=.\ItemMap.vdf
+
+[FILES]
+; Resources (list the specific files from _work here)
+_work\Data\Textures\_compiled\NINJA_ITEMMAP_MARKER-C.TEX
+
+; Script files
+Ninja\ItemMap\* -r
+
+[EXCLUDE]
+_work\Data\Scripts\* -r
+*.vm
+*.vdf
+*.bat
+
+[INCLUDE]
+
+[ENDVDF]
