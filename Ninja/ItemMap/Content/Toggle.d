@@ -2,10 +2,12 @@
  * Toggle the markers
  */
 func void Ninja_ItemMap_Toggle(var int docPtr) {
-    const int zCViewFX__OpenSafe_G1  = 7684304; //0x7540D0
-    const int zCViewFX__OpenSafe_G2  = 6884368; //0x690C10
-    const int zCViewFX__CloseSafe_G1 = 7684528; //0x7541B0
-    const int zCViewFX__CloseSafe_G2 = 6884608; //0x690D00
+    const int zCViewFX__OpenSafe_G1                = 7684304; //0x7540D0
+    const int zCViewFX__OpenSafe_G2                = 6884368; //0x690C10
+    const int zCViewFX__CloseSafe_G1               = 7684528; //0x7541B0
+    const int zCViewFX__CloseSafe_G2               = 6884608; //0x690D00
+    const int oCViewDocumentMap__UpdatePosition_G1 = 7495728; //0x726030
+    const int oCViewDocumentMap__UpdatePosition_G2 = 6870960; //0x68D7B0
 
     // Toggle visibility
     Ninja_ItemMap_State = !Ninja_ItemMap_State;
@@ -14,12 +16,15 @@ func void Ninja_ItemMap_Toggle(var int docPtr) {
     var int arrViewPtr; arrViewPtr = docPtr+252; // oCViewDocumentMap.arrowView
     var int mapViewPtr; mapViewPtr = MEM_ReadInt(docPtr+504); // oCViewDocumentMap.mapView
     var int list; list = MEM_ReadInt(mapViewPtr+88); // zCViewObject.childList
+    var int zero;
+    var int any; any = FALSE;
     while(list);
         var zCListSort l; l = _^(list);
         if (l.data) {
             var int viewPtr; viewPtr = l.data; // zCViewObject*
             if (viewPtr != arrViewPtr) {
-                var int zero;
+                any = TRUE;
+
                 if (!Ninja_ItemMap_State) {
                     const int call = 0;
                     if (CALL_Begin(call)) {
@@ -39,6 +44,16 @@ func void Ninja_ItemMap_Toggle(var int docPtr) {
         };
         list = l.next;
     end;
+
+    // If the items were not added yet
+    if ((!any) && (!Ninja_ItemMap_State)) {
+        const int call3 = 0;
+        if (CALL_Begin(call3)) {
+            CALL__fastcall(_@(docPtr), _@(zero), MEMINT_SwitchG1G2(oCViewDocumentMap__UpdatePosition_G1,
+                                                                   oCViewDocumentMap__UpdatePosition_G2));
+            call3 = CALL_End();
+        };
+    };
 };
 
 /*

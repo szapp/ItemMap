@@ -99,6 +99,11 @@ func void Ninja_ItemMap_DrawItem(var int parentPtr, var int x, var int y, var in
  * Find items and draw them onto the map
  */
 func void Ninja_ItemMap_AddItems() {
+    // If state is hidden, do not draw them yet
+    if (Ninja_ItemMap_State) {
+        return;
+    };
+
     // Obtain map document
     var int docPtr; docPtr = EDI;
 
