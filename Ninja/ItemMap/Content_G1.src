@@ -1,5 +1,8 @@
 Ikarus
 LeGo
 
+Content\Const.d
+Content\Colors.d
+Content\Toggle.d
 Content\Core.d
 Content\NinjaInit.d

@@ -1,49 +1,9 @@
 /*
- * Determine a color by item type
- */
-func int Ninja_ItemMap_GetColor(var int mainflag) {
-    const int categories[INV_CAT_MAX] = {
-        ITEM_KAT_NF | ITEM_KAT_FF | ITEM_KAT_MUN, // INV_WEAPON  COMBAT
-        ITEM_KAT_ARMOR,                           // INV_ARMOR   ARMOR
-        ITEM_KAT_RUNE,                            // INV_RUNE    RUNE
-        ITEM_KAT_MAGIC,                           // INV_MAGIC   MAGIC
-        ITEM_KAT_FOOD,                            // INV_FOOD    FOOD
-        ITEM_KAT_POTIONS,                         // INV_POTION  POTION
-        ITEM_KAT_DOCS,                            // INV_DOC     DOCS
-        ITEM_KAT_NONE | ITEM_KAT_LIGHT,           // INV_MISC    OTHER
-        0
-    };
-    const int colors[INV_CAT_MAX] = {
-        9013641,  // COMBAT 0x898989 gray
-        16744192, // ARMOR  0xFF7F00 orange
-        16515324, // RUNE   0xFC00FC purple
-        16776960, // MAGIC  0xffff00 yellow
-        202646,   // FOOD   0x0A7C00 green
-        32767,    // POTION 0x007FFF blue
-        -1,       // DOCS   0xFFFFFF white
-        16577461, // OTHER  0xFCF3B5 faint yellow/white
-        0
-    };
-
-    // Try to match category
-    repeat(i, INV_CAT_MAX-1); var int i;
-        if (mainflag & MEM_ReadStatArr(_@(categories), i)) {
-            return MEM_ReadStatArr(_@(colors), i);
-        };
-    end;
-
-    // Should never be reached
-    return -1;
-};
-
-
-/*
  * Find all items in the current world
  */
 func int Ninja_ItemMap_GetItems() {
     const int zCWorld__SearchVobListByBaseClass_G1 = 6250016; //0x5F5E20
     const int zCWorld__SearchVobListByBaseClass_G2 = 6439712; //0x624320
-
     const int oCItem__classDef_G1 =  9284224; //0x8DAA80
     const int oCItem__classDef_G2 = 11211112; //0xAB1168
 
@@ -89,15 +49,18 @@ func void Ninja_ItemMap_DrawItem(var int parentPtr, var int x, var int y, var in
     };
 
     var int texNamePtr; texNamePtr = _@s("NINJA_ITEMMAP_MARKER.TGA");
-    var int none;
+    var int open; open = !Ninja_ItemMap_State;
+
+    const int effect = 1; // Zoom
+    const int duration = 1133903872; // 300.0f
     const int call2 = 0;
     if (CALL_Begin(call2)) {
         CALL_PtrParam(_@(texNamePtr));
-        CALL_IntParam(_@(FLOATONE));
-        CALL_IntParam(_@(FLOATONE));
-        CALL_IntParam(_@(none));
-        CALL_IntParam(_@(none));
-        CALL_IntParam(_@(TRUE));
+        CALL_IntParam(_@(duration));
+        CALL_IntParam(_@(duration));
+        CALL_IntParam(_@(effect));
+        CALL_IntParam(_@(effect));
+        CALL_IntParam(_@(open));
         CALL__fastcall(_@(viewPtr), _@(parentPtr), MEMINT_SwitchG1G2(zCViewFX__Init_G1, zCViewFX__Init_G2));
         call2 = CALL_End();
     };
@@ -119,7 +82,7 @@ func void Ninja_ItemMap_DrawItem(var int parentPtr, var int x, var int y, var in
         call4 = CALL_End();
     };
 
-    const int size[2] = {6, 6};
+    const int size[2] = {8, 8};
     var int pos[2];
     pos[0] = x - size[0] / 2;
     pos[1] = y - size[1] / 2;
@@ -161,7 +124,7 @@ func void Ninja_ItemMap_AddItems() {
 
     // Obtain map view dimensions
     var int mapViewPtr; mapViewPtr = MEM_ReadInt(docPtr+504);
-    var int docDim[4]; MEM_CopyWords(mapViewPtr+56, _@(docDim), 4);
+    var int docDim[4]; MEM_CopyWords(mapViewPtr+56, _@(docDim), 4);  // zCViewObject.posPixel and zCViewObject.sizepixel
 
     // Create coordinate translations
     var int wld2map[2]; var int wldDim[2];
@@ -174,14 +137,30 @@ func void Ninja_ItemMap_AddItems() {
     var int arrPtr; arrPtr = Ninja_ItemMap_GetItems();
     var zCArray arr; arr = _^(arrPtr);
 
+    // Get hero to obtain current map item later
+    var oCNpc her; her = Hlp_GetNpc(hero);
+
     // Iterate over items and add them to the map
     repeat(i, arr.numInArray); var int i;
         var int itmPtr; itmPtr = MEM_ArrayRead(arrPtr, i);
         if (Hlp_Is_oCItem(itmPtr)) {
+            // Skip the map item that is currently in use
+            if (itmPtr == her.interactItem) {
+                continue;
+            };
+
             var oCItem itm; itm = _^(itmPtr);
 
-            // Determine color
+            // Skip items of low value
+            if (itm.value < Ninja_ItemMap_MinValue) {
+                continue;
+            };
+
+            // Determine color (or exclude)
             var int color; color = Ninja_ItemMap_GetColor(itm.mainflag);
+            if ((color & zCOLOR_ALPHA) == (123<<zCOLOR_SHIFT_ALPHA)) {
+                continue;
+            };
 
             // Get item world position
             var int itmPos[2];
