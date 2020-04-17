@@ -130,6 +130,9 @@ func void Ninja_ItemMap_AddItems() {
     // Obtain map view dimensions
     var int mapViewPtr; mapViewPtr = MEM_ReadInt(docPtr+504);
     var int docDim[4]; MEM_CopyWords(mapViewPtr+56, _@(docDim), 4);  // zCViewObject.posPixel and zCViewObject.sizepixel
+    var int docCntr[2];
+    docCntr[0] = fracf(docDim[0]*2 + docDim[2], 2);
+    docCntr[1] = fracf(docDim[1]*2 + docDim[3], 2);
 
     // Create coordinate translations
     var int wld2map[2]; var int wldDim[2];
@@ -137,6 +140,9 @@ func void Ninja_ItemMap_AddItems() {
     wldDim[1] = subf(wldPos[3], wldPos[1]);
     wld2map[0] = divf(mkf(docDim[2]), wldDim[0]);
     wld2map[1] = divf(mkf(docDim[3]), wldDim[1]);
+    if (GOTHIC_BASE_VERSION == 1) {
+        wld2map[1] = negf(wld2map[1]);
+    };
 
     // Obtain items
     var int arrPtr; arrPtr = Ninja_ItemMap_GetItems();
@@ -173,8 +179,14 @@ func void Ninja_ItemMap_AddItems() {
             itmPos[1] = itm._zCVob_trafoObjToWorld[11];
 
             // Calculate map position
-            var int x; x =             roundf(mulf(wld2map[0], subf(itmPos[0], wldPos[0]))) + docDim[0];
-            var int y; y = docDim[3] - roundf(mulf(wld2map[1], subf(itmPos[1], wldPos[1]))) + docDim[1];
+            var int x; var int y;
+            if (GOTHIC_BASE_VERSION == 1) {
+                x = roundf(addf(mulf(wld2map[0], itmPos[0]), docCntr[0]));
+                y = roundf(addf(mulf(wld2map[1], itmPos[1]), docCntr[1]));
+            } else {
+                x =             roundf(mulf(wld2map[0], subf(itmPos[0], wldPos[0]))) + docDim[0];
+                y = docDim[3] - roundf(mulf(wld2map[1], subf(itmPos[1], wldPos[1]))) + docDim[1];
+            };
 
             // Create new view and place it on the map
             Ninja_ItemMap_DrawItem(mapViewPtr, x, y, color);
