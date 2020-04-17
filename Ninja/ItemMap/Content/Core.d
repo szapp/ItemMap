@@ -115,7 +115,7 @@ func void Ninja_ItemMap_AddItems() {
 
     // Or obtain world coordinates from world mesh
     if ((wldPos[0] == FLOATNULL) && (wldPos[1] == FLOATNULL) && (wldPos[2] == FLOATNULL) && (wldPos[3] == FLOATNULL)) {
-        var int bbox; bbox = MEM_ReadInt(MEM_World.bspTree_bspRoot)+4;
+        var int bbox; bbox = MEM_World.bspTree_bspRoot+4;
         wldPos[0] = MEM_ReadIntArray(bbox, 0);
         wldPos[1] = MEM_ReadIntArray(bbox, 2);
         wldPos[2] = MEM_ReadIntArray(bbox, 3);
