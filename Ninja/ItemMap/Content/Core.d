@@ -82,10 +82,13 @@ func void Ninja_ItemMap_DrawItem(var int parentPtr, var int x, var int y, var in
         call4 = CALL_End();
     };
 
-    const int size[2] = {8, 8};
+    var int size[2]; MEM_CopyWords(viewPtr+64, _@(size), 2);
     var int pos[2];
     pos[0] = x - size[0] / 2;
     pos[1] = y - size[1] / 2;
+    // The arrow position is not properly centered: shift back (assumed arrow texture size 16x16 pixels)
+    pos[0] += 16 / 2;
+    pos[1] += 16 / 2;
     var int posPtr; posPtr = _@(pos);
     const int call5 = 0;
     if (CALL_Begin(call5)) {
