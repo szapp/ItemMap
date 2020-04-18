@@ -25,7 +25,7 @@ func int Ninja_ItemMap_GetItems(var int classDef, var int arrPtr) {
 };
 
 /*
- * Draw an item into the parent document
+ * Draw a marker into the parent document
  */
 func void Ninja_ItemMap_DrawObject(var int parentPtr, var int x, var int y, var int color) {
     const int zCViewFX__Init_G1                 = 7684128; //0x754020
@@ -104,7 +104,7 @@ func void Ninja_ItemMap_DrawObject(var int parentPtr, var int x, var int y, var 
 };
 
 /*
- * Find items and draw them onto the map
+ * Find items/containers and draw them onto the map
  */
 func void Ninja_ItemMap_AddItems() {
     const int oCItem__classDef_G1         =  9284224; //0x8DAA80
@@ -121,7 +121,6 @@ func void Ninja_ItemMap_AddItems() {
     var int docPtr; docPtr = EDI;
 
     // Obtain world coordinates
-    var int coordShift;
     var int wldPos[4]; MEM_Clear(_@(wldPos), 16); // Clear pseudo-locals
     if (GOTHIC_BASE_VERSION == 2) {
         // Gothic 2 allows to provide the coordinates from script with Doc_SetLevelCoords
@@ -130,9 +129,6 @@ func void Ninja_ItemMap_AddItems() {
         wldPos[1] = MEM_ReadIntArray(levelPos, 3);
         wldPos[2] = MEM_ReadIntArray(levelPos, 2);
         wldPos[3] = MEM_ReadIntArray(levelPos, 1);
-
-        // The coordinates assume a shift of the size of the player marker texture (assumed to be 16x16 here!)
-        coordShift = 16/2;
     };
 
     // Or obtain world coordinates from world mesh
@@ -143,9 +139,6 @@ func void Ninja_ItemMap_AddItems() {
         wldPos[1] = MEM_ReadIntArray(bbox, 2);
         wldPos[2] = MEM_ReadIntArray(bbox, 3);
         wldPos[3] = MEM_ReadIntArray(bbox, 5);
-
-        // The coordinates are exact
-        coordShift = 0;
     };
 
     // Obtain map view dimensions
@@ -211,8 +204,10 @@ func void Ninja_ItemMap_AddItems() {
                 x =             roundf(mulf(wld2map[0], subf(itmPos[0], wldPos[0]))) + docDim[0];
                 y = docDim[3] - roundf(mulf(wld2map[1], subf(itmPos[1], wldPos[1]))) + docDim[1];
             };
-            x += coordShift;
-            y += coordShift;
+
+            // Account for displacement in the coordinates
+            x += Ninja_ItemMap_CoordShift;
+            y += Ninja_ItemMap_CoordShift;
 
             // Create new view and place it on the map
             Ninja_ItemMap_DrawObject(mapViewPtr, x, y, color);
@@ -262,38 +257,38 @@ func void Ninja_ItemMap_AddItems() {
 };
 
 /*
- * Fix player position marker (arrow) on the map
- * Gothic does not subtract the texture dimensions from its position properly. Instead of fixing it here, it is fixed
- * but shifted to its old position to maintain integrity of the map document coordinates (Gothic 2).
+ * Obtain the size of the player position marker (only called once, therefore no recyclable calls)
+ * This functions helps to deal with the incorrectly centered player position marker
  */
-func void Ninja_ItemMap_FixPlayerMarker() {
-    var int arrViewPtr; arrViewPtr = ESI;
-    var int posPtr; posPtr = MEMINT_SwitchG1G2(ESP+88, ESP+80);
-    var int dim[4]; MEM_CopyWords(arrViewPtr+56, _@(dim), 4);  // zCViewObject.posPixel and zCViewObject.sizepixel
-    var int pos[2]; MEM_CopyWords(posPtr, _@(pos), 2); // New position the view is going to be placed at
+func int Ninja_ItemMap_GetPositionMarkerSize() {
+    const int zCTexture__Load_G1           = 6064880; //0x5C8AF0
+    const int zCTexture__Load_G2           = 6239904; //0x5F36A0
+    const int zCTexture__GetPixelSize_G1   = 6081488; //0x5CCBD0
+    const int zCTexture__GetPixelSize_G2   = 6257680; //0x5F7C10
+    const int zCTexture__scal_del_destr_G1 = 6064272; //0x5C8890
+    const int zCTexture__scal_del_destr_G2 = 6239296; //0x5F3440
 
-    // If the view has not be placed yet (no coordinates yet), center the new position
-    if ((dim[0] == 0) && (dim[1] == 0)) {
-        pos[0] -= dim[2]/2;
-        pos[1] -= dim[3]/2;
+    // Retrieve (or load) one of the marker textures
+    var int texPtr;
+    CALL_IntParam(1); // Loading flag
+    CALL_zStringPtrParam("L.TGA");
+    CALL_PutRetValTo(_@(texPtr));
+    CALL__cdecl(MEMINT_SwitchG1G2(zCTexture__Load_G1, zCTexture__Load_G2));
+
+    // Retrieve its dimensions
+    CALL_PtrParam(_@(ret));
+    CALL_PtrParam(_@(ret));
+    CALL__thiscall(texPtr, MEMINT_SwitchG1G2(zCTexture__GetPixelSize_G1, zCTexture__GetPixelSize_G2));
+
+    // Dereference (and possibly delete) the texture again
+    var int refCtr; refCtr = MEM_ReadInt(texPtr+4); // zCObject.refCtr
+    refCtr -= 1;
+    MEM_WriteInt(texPtr+4, refCtr);
+    if (!refCtr) {
+        CALL_IntParam(1);
+        CALL__thiscall(texPtr, MEMINT_SwitchG1G2(zCTexture__scal_del_destr_G1, zCTexture__scal_del_destr_G2));
     };
 
-    // Special case for Gothic 2 if level coordinates have been provided from script with Doc_SetLevelCoords
-    if (GOTHIC_BASE_VERSION == 2) {
-        // Obtain the oCViewDocumentMap
-        var int mapViewPtr; mapViewPtr = MEM_ReadInt(arrViewPtr+76); // zCViewObject.parent
-        var int docPtr; docPtr = MEM_ReadInt(mapViewPtr+76); // zCViewObject.parent
-
-        // Check if the document coordinates where set by script with Doc_SetLevelCoords
-        var int empty[4];
-        if (!MEM_CompareWords(docPtr+528, _@(empty), 4)) { // oCViewDocumentMap.levelPos[4]
-            // Revert the fix (even if not performed here, it was done in oCViewDocumentMap::UpdatePosition)
-            // Because the manually set level coordinates assume this shift and are aligned to it
-            pos[0] += dim[2]/2;
-            pos[1] += dim[3]/2;
-        };
-    };
-
-    // Update position
-    MEM_CopyWords(_@(pos), posPtr, 2);
+    var int ret;
+    return +ret;
 };

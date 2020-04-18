@@ -9,7 +9,7 @@ func void Ninja_ItemMap_Menu() {
     };
     once = 1;
 
-    // Initialize Ikarus
+    // This code is only reached once: Do one-time initializations here
     MEM_InitAll();
 
     MEM_Info("ItemMap: Initializing entries in Gothic.ini.");
@@ -30,6 +30,9 @@ func void Ninja_ItemMap_Menu() {
 
     // Additional speed-up
     Ninja_ItemMap_TexNamePtr = _@s(Ninja_ItemMap_TexName);
+
+    // Obtain player marker texture displacement for shifting the markers
+    Ninja_ItemMap_CoordShift = Ninja_ItemMap_GetPositionMarkerSize() / 2;
 };
 
 /*
@@ -43,19 +46,12 @@ func void Ninja_ItemMap_Init() {
     const int oCDocumentManager__HandleEvent_G2              = 6681689; //0x65F459
     const int oCViewDocumentMap__UpdatePosition_drawItems_G1 = 7495977; //0x726129
     const int oCViewDocumentMap__UpdatePosition_drawItems_G2 = 6871204; //0x68D8A4
-    const int oCViewDocumentMap__UpdatePosition_updateArr_G1 = 7497339; //0x72667B
-    const int oCViewDocumentMap__UpdatePosition_updateArr_G2 = 6872552; //0x68DDE8
 
     // Place hook on updating the map
     HookEngineF(MEMINT_SwitchG1G2(oCViewDocumentMap__UpdatePosition_drawItems_G1,
                                   oCViewDocumentMap__UpdatePosition_drawItems_G2), 7, Ninja_ItemMap_AddItems);
 
-    // Place hook to fix player position marker position
-    HookEngineF(MEMINT_SwitchG1G2(oCViewDocumentMap__UpdatePosition_updateArr_G1,
-                                  oCViewDocumentMap__UpdatePosition_updateArr_G2), 6, Ninja_ItemMap_FixPlayerMarker);
-
     // Place hook on key events
     HookEngineF(MEMINT_SwitchG1G2(oCDocumentManager__HandleEvent_G1,
                                   oCDocumentManager__HandleEvent_G2), 6, Ninja_ItemMap_HandleEvent);
-
 };
