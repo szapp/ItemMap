@@ -98,6 +98,9 @@ func int Ninja_ItemMap_KeyBindingIsToggled(var int keyBinding, var int keyStroke
  * Handle key additional presses
  */
 func void Ninja_ItemMap_HandleEvent() {
+    const int oCViewDocumentMap__vtbl_G1 = 8254556; //0x7DF45C
+    const int oCViewDocumentMap__vtbl_G2 = 8633036; //0x83BACC
+
     if (Ninja_ItemMap_KeyBindingIsToggled(/*zOPT_GAMEKEY_WEAPON*/8, ESI)) {
         // Toggle visibility
         Ninja_ItemMap_State = !Ninja_ItemMap_State;
@@ -106,7 +109,10 @@ func void Ninja_ItemMap_HandleEvent() {
         var int docList; docList = MEM_ReadInt(MEM_ReadInt(ECX+4)+8); // oCDocumentManager.docList.next
         while(docList);
             var zCListSort l; l = _^(docList);
-            Ninja_ItemMap_Toggle(l.data, !Ninja_ItemMap_State);
+            // Only for map documents
+            if (MEM_ReadInt(l.data) == MEMINT_SwitchG1G2(oCViewDocumentMap__vtbl_G1, oCViewDocumentMap__vtbl_G2)) {
+                Ninja_ItemMap_Toggle(l.data, !Ninja_ItemMap_State);
+            };
             docList = l.next;
         end;
     };
