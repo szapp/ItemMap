@@ -36,6 +36,8 @@ func void Ninja_ItemMap_DrawObject(var int parentPtr, var int x, var int y, var 
     const int zCViewDraw__SetTextureColor_G2    = 6881408; //0x690080
     const int oCViewDocument__oCViewDocument_G1 = 7491936; //0x725160
     const int oCViewDocument__oCViewDocument_G2 = 6866464; //0x68C620
+    const int oCViewDocument__scal_del_destr_G1 = 7491888; //0x725130
+    const int oCViewDocument__scal_del_destr_G2 = 6866416; //0x68C5F0
     const int oCViewDocument__SetTexture_G1     = 7493872; //0x7258F0
     const int oCViewDocument__SetTexture_G2     = 6868272; //0x68CD30
 
@@ -82,6 +84,22 @@ func void Ninja_ItemMap_DrawObject(var int parentPtr, var int x, var int y, var 
         CALL__fastcall(_@(viewPtr), _@(posPtr), MEMINT_SwitchG1G2(zCViewObject__SetPixelPosition_G1,
                                                                   zCViewObject__SetPixelPosition_G2));
         call2 = CALL_End();
+    };
+
+    // I no longer refer to the object (it's in its parent's hands now)
+    var int refCtr; refCtr = MEM_ReadInt(viewPtr+4); // zCObject.refCtr
+    refCtr -= 1;
+    MEM_WriteInt(viewPtr+4, refCtr);
+    if (!refCtr) {
+        // Let's do this properly (although this should never be reached)
+        const int one = 1;
+        const int call3 = 0;
+        if (CALL_Begin(call3)) {
+            CALL_IntParam(_@(one));
+            CALL__thiscall(_@(viewPtr), MEMINT_SwitchG1G2(oCViewDocument__scal_del_destr_G1,
+                                                          oCViewDocument__scal_del_destr_G2));
+            call3 = CALL_End();
+        };
     };
 };
 
