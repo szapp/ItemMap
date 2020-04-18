@@ -185,6 +185,11 @@ func void Ninja_ItemMap_AddItems() {
                 continue;
             };
 
+            // Skip non-focusable items (items in use by NPC)
+            if ((itm.flags & /*ITEM_NFOCUS (1<<23)*/ 8388608) == 8388608) {
+                continue;
+            };
+
             // Determine color (or exclude)
             color = Ninja_ItemMap_GetItemColor(itm.mainflag);
             if (color == (255<<24)) {
@@ -246,6 +251,10 @@ func void Ninja_ItemMap_AddItems() {
                     x =             roundf(mulf(wld2map[0], subf(containerPos[0], wldPos[0]))) + docDim[0];
                     y = docDim[3] - roundf(mulf(wld2map[1], subf(containerPos[1], wldPos[1]))) + docDim[1];
                 };
+
+                // Account for displacement in the coordinates
+                x += Ninja_ItemMap_CoordShift;
+                y += Ninja_ItemMap_CoordShift;
 
                 // Create new view and place it on the map
                 Ninja_ItemMap_DrawObject(mapViewPtr, x, y, color);
