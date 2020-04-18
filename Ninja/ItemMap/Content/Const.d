@@ -1,16 +1,14 @@
 /* Toggle state */
 var   int    Ninja_ItemMap_State;
 
-/* Marker texture properties */
+/* Marker texture name and pointer (cache) */
 const string Ninja_ItemMap_TexName    = "NINJA_ITEMMAP_MARKER.TGA";
 const int    Ninja_ItemMap_TexNamePtr = 0;
-const int    Ninja_ItemMap_TexShift   = -(8/2) + (16/2); // TextureSize/2 + ArrowSize/2
-// The arrow position is not properly centered: shift back (assumed arrow texture size 16x16 pixels)
 
-/* Minimum item value */
+/* Minimum item value (default) */
 const int    Ninja_ItemMap_MinValue   = 0;
 
-/* Color table */
+/* Color table (defaults) */
 const int    Ninja_ItemMap_NumItemCat = 8; // INV_CAT_MAX-1
 const int    Ninja_ItemMap_NumColors  = Ninja_ItemMap_NumItemCat+1;
 const int    Ninja_ItemMap_Colors[Ninja_ItemMap_NumColors] = {

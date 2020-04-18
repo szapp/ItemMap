@@ -39,14 +39,23 @@ func void Ninja_ItemMap_Init() {
     // Initialize Ikarus
     MEM_InitAll();
 
-    // Place hook on updating the map and on key events
     const int oCDocumentManager__HandleEvent_G1              = 7490873; //0x724D39
     const int oCDocumentManager__HandleEvent_G2              = 6681689; //0x65F459
     const int oCViewDocumentMap__UpdatePosition_drawItems_G1 = 7495977; //0x726129
     const int oCViewDocumentMap__UpdatePosition_drawItems_G2 = 6871204; //0x68D8A4
+    const int oCViewDocumentMap__UpdatePosition_updateArr_G1 = 7497339; //0x72667B
+    const int oCViewDocumentMap__UpdatePosition_updateArr_G2 = 6872552; //0x68DDE8
 
+    // Place hook on updating the map
     HookEngineF(MEMINT_SwitchG1G2(oCViewDocumentMap__UpdatePosition_drawItems_G1,
                                   oCViewDocumentMap__UpdatePosition_drawItems_G2), 7, Ninja_ItemMap_AddItems);
+
+    // Place hook to fix player position marker position
+    HookEngineF(MEMINT_SwitchG1G2(oCViewDocumentMap__UpdatePosition_updateArr_G1,
+                                  oCViewDocumentMap__UpdatePosition_updateArr_G2), 6, Ninja_ItemMap_FixPlayerMarker);
+
+    // Place hook on key events
     HookEngineF(MEMINT_SwitchG1G2(oCDocumentManager__HandleEvent_G1,
                                   oCDocumentManager__HandleEvent_G2), 6, Ninja_ItemMap_HandleEvent);
+
 };

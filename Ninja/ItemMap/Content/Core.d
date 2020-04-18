@@ -45,12 +45,9 @@ func void Ninja_ItemMap_DrawObject(var int parentPtr, var int x, var int y, var 
     const int effect = 1; // Zoom
     const int duration = 1133903872; // 300.0f
     var int colorPtr; colorPtr = _@(color);
-    var int pos[2]; // Center the texture
-    pos[0] = x + Ninja_ItemMap_TexShift;
-    pos[1] = y + Ninja_ItemMap_TexShift;
-    var int posPtr; posPtr = _@(pos);
 
-    var int viewPtr; viewPtr = MEM_Alloc(252); // oCViewDocument
+    // Create new oCViewDocument object
+    var int viewPtr; viewPtr = MEM_Alloc(252);
 
     const int call = 0;
     if (CALL_Begin(call)) {
@@ -71,10 +68,20 @@ func void Ninja_ItemMap_DrawObject(var int parentPtr, var int x, var int y, var 
 
         CALL__fastcall(_@(viewPtr), _@(colorPtr), MEMINT_SwitchG1G2(zCViewDraw__SetTextureColor_G1,
                                                                     zCViewDraw__SetTextureColor_G2));
+        call = CALL_End();
+    };
 
+    // Center the texture
+    var int size[2]; MEM_CopyWords(viewPtr+64, _@(size), 2); // zCViewObject.sizepixel
+    var int pos[2];
+    pos[0] = x - size[0]/2;
+    pos[1] = y - size[1]/2;
+    var int posPtr; posPtr = _@(pos);
+    const int call2 = 0;
+    if (CALL_Begin(call2)) {
         CALL__fastcall(_@(viewPtr), _@(posPtr), MEMINT_SwitchG1G2(zCViewObject__SetPixelPosition_G1,
                                                                   zCViewObject__SetPixelPosition_G2));
-        call = CALL_End();
+        call2 = CALL_End();
     };
 };
 
@@ -96,23 +103,31 @@ func void Ninja_ItemMap_AddItems() {
     var int docPtr; docPtr = EDI;
 
     // Obtain world coordinates
+    var int coordShift;
     var int wldPos[4]; MEM_Clear(_@(wldPos), 16); // Clear pseudo-locals
     if (GOTHIC_BASE_VERSION == 2) {
-        // Gothic 2 has these saved (only sometimes!)
+        // Gothic 2 allows to provide the coordinates from script with Doc_SetLevelCoords
         var int levelPos; levelPos = docPtr+528;
         wldPos[0] = MEM_ReadIntArray(levelPos, 0);
         wldPos[1] = MEM_ReadIntArray(levelPos, 3);
         wldPos[2] = MEM_ReadIntArray(levelPos, 2);
         wldPos[3] = MEM_ReadIntArray(levelPos, 1);
+
+        // The coordinates assume a shift of the size of the player marker texture (assumed to be 16x16 here!)
+        coordShift = 16/2;
     };
 
     // Or obtain world coordinates from world mesh
-    if ((wldPos[0] == FLOATNULL) && (wldPos[1] == FLOATNULL) && (wldPos[2] == FLOATNULL) && (wldPos[3] == FLOATNULL)) {
+    var int empty[4];
+    if (MEM_CompareWords(_@(wldPos), _@(empty), 4)) {
         var int bbox; bbox = MEM_World.bspTree_bspRoot+4;
         wldPos[0] = MEM_ReadIntArray(bbox, 0);
         wldPos[1] = MEM_ReadIntArray(bbox, 2);
         wldPos[2] = MEM_ReadIntArray(bbox, 3);
         wldPos[3] = MEM_ReadIntArray(bbox, 5);
+
+        // The coordinates are exact
+        coordShift = 0;
     };
 
     // Obtain map view dimensions
@@ -132,15 +147,16 @@ func void Ninja_ItemMap_AddItems() {
         wld2map[1] = negf(wld2map[1]);
     };
 
-    // Obtain items
-    var int arrPtr; arrPtr = Ninja_ItemMap_GetItems(MEMINT_SwitchG1G2(oCItem__classDef_G1, oCItem__classDef_G2), 0);
-    var zCArray arr; arr = _^(arrPtr);
+    // Drawing properties
+    var int color;
+    var int x; var int y;
 
     // Get hero to obtain current map item later
     var oCNpc her; her = Hlp_GetNpc(hero);
 
-    var int color;
-    var int x; var int y;
+    // Obtain items
+    var int arrPtr; arrPtr = Ninja_ItemMap_GetItems(MEMINT_SwitchG1G2(oCItem__classDef_G1, oCItem__classDef_G2), 0);
+    var zCArray arr; arr = _^(arrPtr);
 
     // Iterate over items and add them to the map
     repeat(i, arr.numInArray); var int i;
@@ -177,6 +193,8 @@ func void Ninja_ItemMap_AddItems() {
                 x =             roundf(mulf(wld2map[0], subf(itmPos[0], wldPos[0]))) + docDim[0];
                 y = docDim[3] - roundf(mulf(wld2map[1], subf(itmPos[1], wldPos[1]))) + docDim[1];
             };
+            x += coordShift;
+            y += coordShift;
 
             // Create new view and place it on the map
             Ninja_ItemMap_DrawObject(mapViewPtr, x, y, color);
@@ -223,4 +241,41 @@ func void Ninja_ItemMap_AddItems() {
     };
 
     MEM_ArrayFree(arrPtr);
+};
+
+/*
+ * Fix player position marker (arrow) on the map
+ * Gothic does not subtract the texture dimensions from its position properly. Instead of fixing it here, it is fixed
+ * but shifted to its old position to maintain integrity of the map document coordinates (Gothic 2).
+ */
+func void Ninja_ItemMap_FixPlayerMarker() {
+    var int arrViewPtr; arrViewPtr = ESI;
+    var int posPtr; posPtr = MEMINT_SwitchG1G2(ESP+88, ESP+80);
+    var int dim[4]; MEM_CopyWords(arrViewPtr+56, _@(dim), 4);  // zCViewObject.posPixel and zCViewObject.sizepixel
+    var int pos[2]; MEM_CopyWords(posPtr, _@(pos), 2); // New position the view is going to be placed at
+
+    // If the view has not be placed yet (no coordinates yet), center the new position
+    if ((dim[0] == 0) && (dim[1] == 0)) {
+        pos[0] -= dim[2]/2;
+        pos[1] -= dim[3]/2;
+    };
+
+    // Special case for Gothic 2 if level coordinates have been provided from script with Doc_SetLevelCoords
+    if (GOTHIC_BASE_VERSION == 2) {
+        // Obtain the oCViewDocumentMap
+        var int mapViewPtr; mapViewPtr = MEM_ReadInt(arrViewPtr+76); // zCViewObject.parent
+        var int docPtr; docPtr = MEM_ReadInt(mapViewPtr+76); // zCViewObject.parent
+
+        // Check if the document coordinates where set by script with Doc_SetLevelCoords
+        var int empty[4];
+        if (!MEM_CompareWords(docPtr+528, _@(empty), 4)) { // oCViewDocumentMap.levelPos[4]
+            // Revert the fix (even if not performed here, it was done in oCViewDocumentMap::UpdatePosition)
+            // Because the manually set level coordinates assume this shift and are aligned to it
+            pos[0] += dim[2]/2;
+            pos[1] += dim[3]/2;
+        };
+    };
+
+    // Update position
+    MEM_CopyWords(_@(pos), posPtr, 2);
 };
