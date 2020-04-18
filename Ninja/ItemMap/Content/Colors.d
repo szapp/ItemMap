@@ -1,8 +1,8 @@
 /*
  * Determine a color by item type
  */
-func int Ninja_ItemMap_GetColor(var int mainflag) {
-    const int categories[/*INV_CAT_MAX-1*/8] = {
+func int Ninja_ItemMap_GetItemColor(var int mainflag) {
+    const int categories[Ninja_ItemMap_NumItemCat] = {
         ITEM_KAT_NF | ITEM_KAT_FF | ITEM_KAT_MUN, // INV_WEAPON  COMBAT
         ITEM_KAT_ARMOR,                           // INV_ARMOR   ARMOR
         ITEM_KAT_RUNE,                            // INV_RUNE    RUNE
@@ -14,7 +14,7 @@ func int Ninja_ItemMap_GetColor(var int mainflag) {
     };
 
     // Match category
-    repeat(i, /*INV_CAT_MAX-1*/8); var int i;
+    repeat(i, Ninja_ItemMap_NumItemCat); var int i;
         if (mainflag & MEM_ReadStatArr(_@(categories), i)) {
             return MEM_ReadStatArr(_@(Ninja_ItemMap_Colors), i);
         };
@@ -77,14 +77,19 @@ func int Ninja_ItemMap_ReadColor(var string value, var int default) {
 
         // Mark to skip
         if (Hlp_StrCmp(entry, "0")) || (Hlp_StrCmp(entry, "FALSE")) {
-            return default | (123<<zCOLOR_SHIFT_ALPHA);
+            return 255<<24;
         };
 
-        var string hexstr; hexstr = "#";
-        hexstr = ConcatStrings(hexstr, Ninja_ItemMap_Byte2hex(default>>16));
-        hexstr = ConcatStrings(hexstr, Ninja_ItemMap_Byte2hex(default>>8));
-        hexstr = ConcatStrings(hexstr, Ninja_ItemMap_Byte2hex(default));
-        MEM_SetGothOpt("ITEMMAP", value, hexstr);
+        // Write default value to INI
+        if (default == (255<<24)) {
+            entry = "FALSE";
+        } else {
+            entry = "#";
+            entry = ConcatStrings(entry, Ninja_ItemMap_Byte2hex(default>>16));
+            entry = ConcatStrings(entry, Ninja_ItemMap_Byte2hex(default>>8));
+            entry = ConcatStrings(entry, Ninja_ItemMap_Byte2hex(default));
+        };
+        MEM_SetGothOpt("ITEMMAP", value, entry);
         return default;
     };
 

@@ -1,21 +1,21 @@
 /*
  * Find all items in the current world
  */
-func int Ninja_ItemMap_GetItems() {
+func int Ninja_ItemMap_GetItems(var int classDef, var int arrPtr) {
     const int zCWorld__SearchVobListByBaseClass_G1 = 6250016; //0x5F5E20
     const int zCWorld__SearchVobListByBaseClass_G2 = 6439712; //0x624320
-    const int oCItem__classDef_G1 =  9284224; //0x8DAA80
-    const int oCItem__classDef_G2 = 11211112; //0xAB1168
 
-    var int arrPtr;     arrPtr     = MEM_ArrayCreate();
     var int vobTreePtr; vobTreePtr = _@(MEM_Vobtree);
     var int worldPtr;   worldPtr   = _@(MEM_World);
+    if (!arrPtr) {
+        arrPtr = MEM_ArrayCreate();
+    };
 
     const int call = 0;
     if (CALL_Begin(call)) {
         CALL_PtrParam(_@(vobTreePtr));
         CALL_PtrParam(_@(arrPtr));
-        CALL_PtrParam(MEMINT_SwitchG1G2(_@(oCItem__classDef_G1), _@(oCItem__classDef_G2)));
+        CALL_PtrParam(_@(classDef));
         CALL__thiscall(_@(worldPtr), MEMINT_SwitchG1G2(zCWorld__SearchVobListByBaseClass_G1,
                                                        zCWorld__SearchVobListByBaseClass_G2));
         call = CALL_End();
@@ -27,7 +27,7 @@ func int Ninja_ItemMap_GetItems() {
 /*
  * Draw an item into the parent document
  */
-func void Ninja_ItemMap_DrawItem(var int parentPtr, var int x, var int y, var int color) {
+func void Ninja_ItemMap_DrawObject(var int parentPtr, var int x, var int y, var int color) {
     const int zCViewFX__Init_G1                 = 7684128; //0x754020
     const int zCViewFX__Init_G2                 = 6884192; //0x690B60
     const int zCViewObject__SetPixelPosition_G1 = 7689040; //0x755350
@@ -42,9 +42,9 @@ func void Ninja_ItemMap_DrawItem(var int parentPtr, var int x, var int y, var in
     // Arguments for the following function calls
     var int zero;
     var int open; open = !Ninja_ItemMap_State;
-    var int colorPtr; colorPtr = _@(color);
     const int effect = 1; // Zoom
     const int duration = 1133903872; // 300.0f
+    var int colorPtr; colorPtr = _@(color);
     var int pos[2]; // Center the texture
     pos[0] = x + Ninja_ItemMap_TexShift;
     pos[1] = y + Ninja_ItemMap_TexShift;
@@ -82,6 +82,11 @@ func void Ninja_ItemMap_DrawItem(var int parentPtr, var int x, var int y, var in
  * Find items and draw them onto the map
  */
 func void Ninja_ItemMap_AddItems() {
+    const int oCItem__classDef_G1         =  9284224; //0x8DAA80
+    const int oCItem__classDef_G2         = 11211112; //0xAB1168
+    const int oCMobContainer__classDef_G1 =  9285504; //0x8DAF80
+    const int oCMobContainer__classDef_G2 = 11212976; //0xAB18B0
+
     // If state is hidden, do not draw them yet
     if (Ninja_ItemMap_State) {
         return;
@@ -128,11 +133,14 @@ func void Ninja_ItemMap_AddItems() {
     };
 
     // Obtain items
-    var int arrPtr; arrPtr = Ninja_ItemMap_GetItems();
+    var int arrPtr; arrPtr = Ninja_ItemMap_GetItems(MEMINT_SwitchG1G2(oCItem__classDef_G1, oCItem__classDef_G2), 0);
     var zCArray arr; arr = _^(arrPtr);
 
     // Get hero to obtain current map item later
     var oCNpc her; her = Hlp_GetNpc(hero);
+
+    var int color;
+    var int x; var int y;
 
     // Iterate over items and add them to the map
     repeat(i, arr.numInArray); var int i;
@@ -151,8 +159,8 @@ func void Ninja_ItemMap_AddItems() {
             };
 
             // Determine color (or exclude)
-            var int color; color = Ninja_ItemMap_GetColor(itm.mainflag);
-            if ((color & zCOLOR_ALPHA) == (123<<zCOLOR_SHIFT_ALPHA)) {
+            color = Ninja_ItemMap_GetItemColor(itm.mainflag);
+            if (color == (255<<24)) {
                 continue;
             };
 
@@ -162,7 +170,6 @@ func void Ninja_ItemMap_AddItems() {
             itmPos[1] = itm._zCVob_trafoObjToWorld[11];
 
             // Calculate map position
-            var int x; var int y;
             if (GOTHIC_BASE_VERSION == 1) {
                 x = roundf(addf(mulf(wld2map[0], itmPos[0]), docCntr[0]));
                 y = roundf(addf(mulf(wld2map[1], itmPos[1]), docCntr[1]));
@@ -172,9 +179,48 @@ func void Ninja_ItemMap_AddItems() {
             };
 
             // Create new view and place it on the map
-            Ninja_ItemMap_DrawItem(mapViewPtr, x, y, color);
+            Ninja_ItemMap_DrawObject(mapViewPtr, x, y, color);
         };
     end;
+
+    // Check if also containers are requested
+    if (Ninja_ItemMap_Colors[8] != (255<<24)) {
+        // Collect all containers in the world
+        MEM_ArrayClear(arrPtr);
+        arrPtr = Ninja_ItemMap_GetItems(MEMINT_SwitchG1G2(oCMobContainer__classDef_G1,
+                                                          oCMobContainer__classDef_G2), arrPtr);
+
+        // Iterate over containers and add them to the map
+        color = Ninja_ItemMap_Colors[8];
+        repeat(i, arr.numInArray); var int i;
+            var int containerPtr; containerPtr = MEM_ArrayRead(arrPtr, i);
+            if (Hlp_Is_oCMobContainer(containerPtr)) {
+                var oCMobContainer container; container = _^(containerPtr);
+
+                // Skip if already looted (empty)
+                if (!container.containList_next) {
+                    continue;
+                };
+
+                // Get container world position
+                var int containerPos[2];
+                containerPos[0] = container._zCVob_trafoObjToWorld[ 3];
+                containerPos[1] = container._zCVob_trafoObjToWorld[11];
+
+                // Calculate map position
+                if (GOTHIC_BASE_VERSION == 1) {
+                    x = roundf(addf(mulf(wld2map[0], containerPos[0]), docCntr[0]));
+                    y = roundf(addf(mulf(wld2map[1], containerPos[1]), docCntr[1]));
+                } else {
+                    x =             roundf(mulf(wld2map[0], subf(containerPos[0], wldPos[0]))) + docDim[0];
+                    y = docDim[3] - roundf(mulf(wld2map[1], subf(containerPos[1], wldPos[1]))) + docDim[1];
+                };
+
+                // Create new view and place it on the map
+                Ninja_ItemMap_DrawObject(mapViewPtr, x, y, color);
+            };
+        end;
+    };
 
     MEM_ArrayFree(arrPtr);
 };
