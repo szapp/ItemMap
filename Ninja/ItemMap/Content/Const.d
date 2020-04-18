@@ -21,5 +21,5 @@ const int    Ninja_ItemMap_Colors[Ninja_ItemMap_NumColors] = {
     49151,    // POTION #00BFFF blue
     16577461, // DOCS   #FCF3B5 faint yellow/white
     9013641,  // OTHER  #898989 dark gray
-    (255<<24) // CHEST  FALSE
+    8343854   // CHEST  #7F512E brown
 };

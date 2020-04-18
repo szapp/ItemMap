@@ -1,5 +1,5 @@
 [BEGINVDF]
-Comment=This patch marks all items in the world on the map (Gothic 1 and Gothic 2 NotR)%%NToggle visibilty with weapon-key, set display colors and minimum item value in Gothic.ini
+Comment=This patch marks all items (and non-empty chests) in the world on the map (Gothic 1 and Gothic 2 NotR)%%NToggle visibilty with weapon-key, set display colors and minimum item value in Gothic.ini
 BaseDir=.\
 VDFName=.\ItemMap.vdf
 
