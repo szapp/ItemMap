@@ -1,11 +1,17 @@
 /* Toggle state */
-var   int Ninja_ItemMap_State;
+var   int    Ninja_ItemMap_State;
+
+/* Marker texture properties */
+const string Ninja_ItemMap_TexName = "NINJA_ITEMMAP_MARKER.TGA";
+const int    Ninja_ItemMap_TexNamePtr = 0;
+// The arrow position is not properly centered: shift back (assumed arrow texture size 16x16 pixels)
+const int    Ninja_ItemMap_TexShift = -(8/2 + 16/2); // TextureSize/2 + ArrowSize/2
 
 /* Minimum item value */
-const int Ninja_ItemMap_MinValue = 0;
+const int    Ninja_ItemMap_MinValue = 0;
 
 /* Color table */
-const int Ninja_ItemMap_Colors[/*INV_CAT_MAX-1*/8] = {
+const int    Ninja_ItemMap_Colors[/*INV_CAT_MAX-1*/8] = {
     14826792, // COMBAT #E23D28 red
     16744192, // ARMOR  #FF7F00 orange
     16515324, // RUNE   #FC00FC purple

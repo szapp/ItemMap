@@ -39,62 +39,42 @@ func void Ninja_ItemMap_DrawItem(var int parentPtr, var int x, var int y, var in
     const int oCViewDocument__SetTexture_G1     = 7493872; //0x7258F0
     const int oCViewDocument__SetTexture_G2     = 6868272; //0x68CD30
 
+    // Arguments for the following function calls
+    var int zero;
+    var int open; open = !Ninja_ItemMap_State;
+    var int colorPtr; colorPtr = _@(color);
+    const int effect = 1; // Zoom
+    const int duration = 1133903872; // 300.0f
+    var int pos[2]; // Center the texture
+    pos[0] = x + Ninja_ItemMap_TexShift;
+    pos[1] = y + Ninja_ItemMap_TexShift;
+    var int posPtr; posPtr = _@(pos);
+
     var int viewPtr; viewPtr = MEM_Alloc(252); // oCViewDocument
 
     const int call = 0;
     if (CALL_Begin(call)) {
         CALL__thiscall(_@(viewPtr), MEMINT_SwitchG1G2(oCViewDocument__oCViewDocument_G1,
                                                       oCViewDocument__oCViewDocument_G2));
-        call = CALL_End();
-    };
 
-    var int texNamePtr; texNamePtr = _@s("NINJA_ITEMMAP_MARKER.TGA");
-    var int open; open = !Ninja_ItemMap_State;
-
-    const int effect = 1; // Zoom
-    const int duration = 1133903872; // 300.0f
-    const int call2 = 0;
-    if (CALL_Begin(call2)) {
-        CALL_PtrParam(_@(texNamePtr));
+        CALL_PtrParam(_@(Ninja_ItemMap_TexNamePtr));
         CALL_IntParam(_@(duration));
         CALL_IntParam(_@(duration));
         CALL_IntParam(_@(effect));
         CALL_IntParam(_@(effect));
         CALL_IntParam(_@(open));
         CALL__fastcall(_@(viewPtr), _@(parentPtr), MEMINT_SwitchG1G2(zCViewFX__Init_G1, zCViewFX__Init_G2));
-        call2 = CALL_End();
-    };
 
-    var int zero;
-    const int call3 = 0;
-    if (CALL_Begin(call3)) {
         CALL_IntParam(_@(zero));
-        CALL__fastcall(_@(viewPtr), _@(texNamePtr), MEMINT_SwitchG1G2(oCViewDocument__SetTexture_G1,
-                                                                      oCViewDocument__SetTexture_G2));
-        call3 = CALL_End();
-    };
+        CALL__fastcall(_@(viewPtr), _@(Ninja_ItemMap_TexNamePtr), MEMINT_SwitchG1G2(oCViewDocument__SetTexture_G1,
+                                                                                    oCViewDocument__SetTexture_G2));
 
-    var int colorPtr; colorPtr = _@(color);
-    const int call4 = 0;
-    if (CALL_Begin(call4)) {
         CALL__fastcall(_@(viewPtr), _@(colorPtr), MEMINT_SwitchG1G2(zCViewDraw__SetTextureColor_G1,
                                                                     zCViewDraw__SetTextureColor_G2));
-        call4 = CALL_End();
-    };
 
-    var int size[2]; MEM_CopyWords(viewPtr+64, _@(size), 2);
-    var int pos[2];
-    pos[0] = x - size[0] / 2;
-    pos[1] = y - size[1] / 2;
-    // The arrow position is not properly centered: shift back (assumed arrow texture size 16x16 pixels)
-    pos[0] += 16 / 2;
-    pos[1] += 16 / 2;
-    var int posPtr; posPtr = _@(pos);
-    const int call5 = 0;
-    if (CALL_Begin(call5)) {
         CALL__fastcall(_@(viewPtr), _@(posPtr), MEMINT_SwitchG1G2(zCViewObject__SetPixelPosition_G1,
                                                                   zCViewObject__SetPixelPosition_G2));
-        call5 = CALL_End();
+        call = CALL_End();
     };
 };
 

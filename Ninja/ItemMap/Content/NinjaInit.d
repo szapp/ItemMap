@@ -26,6 +26,9 @@ func void Ninja_ItemMap_Menu() {
     Ninja_ItemMap_Colors[5] = Ninja_ItemMap_ReadColor("potion", Ninja_ItemMap_Colors[5]);
     Ninja_ItemMap_Colors[6] = Ninja_ItemMap_ReadColor("docs",   Ninja_ItemMap_Colors[6]);
     Ninja_ItemMap_Colors[7] = Ninja_ItemMap_ReadColor("other",  Ninja_ItemMap_Colors[7]);
+
+    // Additional speed-up
+    Ninja_ItemMap_TexNamePtr = _@s(Ninja_ItemMap_TexName);
 };
 
 /*
