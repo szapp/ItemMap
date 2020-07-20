@@ -190,6 +190,11 @@ func void Ninja_ItemMap_AddItems() {
                 continue;
             };
 
+            // Skip invalid items
+            if (itm.instanz < 0) {
+                continue;
+            };
+
             // Determine color (or exclude)
             color = Ninja_ItemMap_GetItemColor(itm.mainflag);
             if (color == (255<<24)) {
