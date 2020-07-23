@@ -3,14 +3,14 @@
  */
 func int Ninja_ItemMap_GetItemColor(var int mainflag) {
     const int categories[Ninja_ItemMap_NumItemCat] = {
-        ITEM_KAT_NF | ITEM_KAT_FF | ITEM_KAT_MUN, // INV_WEAPON  COMBAT
-        ITEM_KAT_ARMOR,                           // INV_ARMOR   ARMOR
-        ITEM_KAT_RUNE,                            // INV_RUNE    RUNE
-        ITEM_KAT_MAGIC,                           // INV_MAGIC   MAGIC
-        ITEM_KAT_FOOD,                            // INV_FOOD    FOOD
-        ITEM_KAT_POTIONS,                         // INV_POTION  POTION
-        ITEM_KAT_DOCS,                            // INV_DOC     DOCS
-        ITEM_KAT_NONE | ITEM_KAT_LIGHT            // INV_MISC    OTHER
+        /*ITEM_KAT_NF*/      (1 <<  1) | /*ITEM_KAT_FF*/ (1 << 2) | /*ITEM_KAT_MUN*/ (1 << 3), // INV_WEAPON  COMBAT
+        /*ITEM_KAT_ARMOR*/   (1 <<  4),                                                        // INV_ARMOR   ARMOR
+        /*ITEM_KAT_RUNE*/    (1 <<  9),                                                        // INV_RUNE    RUNE
+        /*ITEM_KAT_MAGIC*/   (1 << 31),                                                        // INV_MAGIC   MAGIC
+        /*ITEM_KAT_FOOD*/    (1 <<  5),                                                        // INV_FOOD    FOOD
+        /*ITEM_KAT_POTIONS*/ (1 <<  7),                                                        // INV_POTION  POTION
+        /*ITEM_KAT_DOCS*/    (1 <<  6),                                                        // INV_DOC     DOCS
+        /*ITEM_KAT_NONE*/    (1 <<  0) | /*ITEM_KAT_LIGHT*/ (1 <<  8)                          // INV_MISC    OTHER
     };
 
     // Match category
