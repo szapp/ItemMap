@@ -5,6 +5,7 @@ var   int    Ninja_ItemMap_State;
 const string Ninja_ItemMap_TexName    = "NINJA_ITEMMAP_MARKER.TGA";
 const int    Ninja_ItemMap_TexNamePtr = 0;
 const int    Ninja_ItemMap_CoordShift = 0;
+const int    Ninja_ItemMap_MarkerSize = 8;
 
 /* Minimum item value (default) */
 const int    Ninja_ItemMap_MinValue   = 0;

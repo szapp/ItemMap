@@ -30,6 +30,8 @@ func int Ninja_ItemMap_GetItems(var int classDef, var int arrPtr) {
 func void Ninja_ItemMap_DrawObject(var int parentPtr, var int x, var int y, var int color) {
     const int zCViewFX__Init_G1                 = 7684128; //0x754020
     const int zCViewFX__Init_G2                 = 6884192; //0x690B60
+    const int zCViewObject__SetPixelSize_G1     = 7689744; //0x755610
+    const int zCViewObject__SetPixelSize_G2     = 6889824; //0x692160
     const int zCViewObject__SetPixelPosition_G1 = 7689040; //0x755350
     const int zCViewObject__SetPixelPosition_G2 = 6889120; //0x691EA0
     const int zCViewDraw__SetTextureColor_G1    = 7681456; //0x7535B0
@@ -42,17 +44,32 @@ func void Ninja_ItemMap_DrawObject(var int parentPtr, var int x, var int y, var 
     const int oCViewDocument__SetTexture_G2     = 6868272; //0x68CD30
 
     // Arguments for the following function calls
-    var int zero;
     var int open; open = !Ninja_ItemMap_State;
     const int effect = 1; // Zoom
     const int duration = 1133903872; // 300.0f
-    var int colorPtr; colorPtr = _@(color);
+    const int colorPtr = 0;
+    const int sizePtr = 0;
+    const int posPtr = 0;
+
+    // Marker size
+    var int size[2];
+    size[0] = Ninja_ItemMap_MarkerSize;
+    size[1] = Ninja_ItemMap_MarkerSize;
+
+    // Centered
+    var int pos[2];
+    pos[0] = x - Ninja_ItemMap_MarkerSize/2;
+    pos[1] = y - Ninja_ItemMap_MarkerSize/2;
 
     // Create new oCViewDocument object
     var int viewPtr; viewPtr = MEM_Alloc(252);
 
     const int call = 0;
     if (CALL_Begin(call)) {
+        colorPtr = _@(color);
+        sizePtr = _@(size);
+        posPtr = _@(pos);
+
         CALL__thiscall(_@(viewPtr), MEMINT_SwitchG1G2(oCViewDocument__oCViewDocument_G1,
                                                       oCViewDocument__oCViewDocument_G2));
 
@@ -64,41 +81,33 @@ func void Ninja_ItemMap_DrawObject(var int parentPtr, var int x, var int y, var 
         CALL_IntParam(_@(open));
         CALL__fastcall(_@(viewPtr), _@(parentPtr), MEMINT_SwitchG1G2(zCViewFX__Init_G1, zCViewFX__Init_G2));
 
-        CALL_IntParam(_@(zero));
+        CALL_IntParam(_@(FALSE));
         CALL__fastcall(_@(viewPtr), _@(Ninja_ItemMap_TexNamePtr), MEMINT_SwitchG1G2(oCViewDocument__SetTexture_G1,
                                                                                     oCViewDocument__SetTexture_G2));
 
         CALL__fastcall(_@(viewPtr), _@(colorPtr), MEMINT_SwitchG1G2(zCViewDraw__SetTextureColor_G1,
                                                                     zCViewDraw__SetTextureColor_G2));
-        call = CALL_End();
-    };
 
-    // Center the texture
-    var int size[2]; MEM_CopyWords(viewPtr+64, _@(size), 2); // zCViewObject.sizepixel
-    var int pos[2];
-    pos[0] = x - size[0]/2;
-    pos[1] = y - size[1]/2;
-    var int posPtr; posPtr = _@(pos);
-    const int call2 = 0;
-    if (CALL_Begin(call2)) {
+        CALL__fastcall(_@(viewPtr), _@(sizePtr), MEMINT_SwitchG1G2(zCViewObject__SetPixelSize_G1,
+                                                                   zCViewObject__SetPixelSize_G2));
+
         CALL__fastcall(_@(viewPtr), _@(posPtr), MEMINT_SwitchG1G2(zCViewObject__SetPixelPosition_G1,
                                                                   zCViewObject__SetPixelPosition_G2));
-        call2 = CALL_End();
+        call = CALL_End();
     };
 
     // I no longer refer to the object (it's in its parent's hands now)
     var int refCtr; refCtr = MEM_ReadInt(viewPtr+4); // zCObject.refCtr
     refCtr -= 1;
     MEM_WriteInt(viewPtr+4, refCtr);
-    if (!refCtr) {
+    if (refCtr <= 0) {
         // Let's do this properly (although this should never be reached)
-        const int one = 1;
-        const int call3 = 0;
-        if (CALL_Begin(call3)) {
-            CALL_IntParam(_@(one));
+        const int call2 = 0;
+        if (CALL_Begin(call2)) {
+            CALL_IntParam(_@(TRUE));
             CALL__thiscall(_@(viewPtr), MEMINT_SwitchG1G2(oCViewDocument__scal_del_destr_G1,
                                                           oCViewDocument__scal_del_destr_G2));
-            call3 = CALL_End();
+            call2 = CALL_End();
         };
     };
 };
@@ -167,10 +176,9 @@ func void Ninja_ItemMap_AddItems() {
 
     // Obtain items
     var int arrPtr; arrPtr = Ninja_ItemMap_GetItems(MEMINT_SwitchG1G2(oCItem__classDef_G1, oCItem__classDef_G2), 0);
-    var zCArray arr; arr = _^(arrPtr);
 
     // Iterate over items and add them to the map
-    repeat(i, arr.numInArray); var int i;
+    repeat(i, MEM_ArraySize(arrPtr)); var int i;
         var int itmPtr; itmPtr = MEM_ArrayRead(arrPtr, i);
         if (Hlp_Is_oCItem(itmPtr)) {
             // Skip the map item that is currently in use
@@ -233,7 +241,7 @@ func void Ninja_ItemMap_AddItems() {
 
         // Iterate over containers and add them to the map
         color = Ninja_ItemMap_Colors[8];
-        repeat(i, arr.numInArray); var int i;
+        repeat(i, MEM_ArraySize(arrPtr));
             var int containerPtr; containerPtr = MEM_ArrayRead(arrPtr, i);
             if (Hlp_Is_oCMobContainer(containerPtr)) {
                 var oCMobContainer container; container = _^(containerPtr);
@@ -274,7 +282,7 @@ func void Ninja_ItemMap_AddItems() {
  * Obtain the size of the player position marker (only called once, therefore no recyclable calls)
  * This functions helps to deal with the incorrectly centered player position marker
  */
-func int Ninja_ItemMap_GetPositionMarkerSize() {
+func int Ninja_ItemMap_GetTexSize(var string texture) {
     const int zCTexture__Load_G1           = 6064880; //0x5C8AF0
     const int zCTexture__Load_G2           = 6239904; //0x5F36A0
     const int zCTexture__GetPixelSize_G1   = 6081488; //0x5CCBD0
@@ -285,7 +293,7 @@ func int Ninja_ItemMap_GetPositionMarkerSize() {
     // Retrieve (or load) one of the marker textures
     var int texPtr;
     CALL_IntParam(1); // Loading flag
-    CALL_zStringPtrParam("L.TGA");
+    CALL_zStringPtrParam(texture);
     CALL_PutRetValTo(_@(texPtr));
     CALL__cdecl(MEMINT_SwitchG1G2(zCTexture__Load_G1, zCTexture__Load_G2));
 
@@ -298,11 +306,17 @@ func int Ninja_ItemMap_GetPositionMarkerSize() {
     var int refCtr; refCtr = MEM_ReadInt(texPtr+4); // zCObject.refCtr
     refCtr -= 1;
     MEM_WriteInt(texPtr+4, refCtr);
-    if (!refCtr) {
+    if (refCtr <= 0) {
         CALL_IntParam(1);
         CALL__thiscall(texPtr, MEMINT_SwitchG1G2(zCTexture__scal_del_destr_G1, zCTexture__scal_del_destr_G2));
     };
 
     var int ret;
     return +ret;
+};
+func int Ninja_ItemMap_GetPositionMarkerSize() {
+    return Ninja_ItemMap_GetTexSize("L.TGA");
+};
+func int Ninja_ItemMap_GetItemMarkerSize() {
+    return Ninja_ItemMap_GetTexSize(Ninja_ItemMap_TexName);
 };

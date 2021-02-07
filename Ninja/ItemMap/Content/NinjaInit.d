@@ -33,6 +33,9 @@ func void Ninja_ItemMap_Menu() {
 
     // Obtain player marker texture displacement for shifting the markers
     Ninja_ItemMap_CoordShift = Ninja_ItemMap_GetPositionMarkerSize() / 2;
+
+    // Obtain item marker size
+    Ninja_ItemMap_MarkerSize = roundf(mulf(mkf(Ninja_ItemMap_GetItemMarkerSize()), Bar_GetInterfaceScaling()));
 };
 
 /*
