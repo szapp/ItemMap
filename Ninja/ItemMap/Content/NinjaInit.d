@@ -14,9 +14,13 @@ func void Ninja_ItemMap_Menu() {
 
     MEM_Info("ItemMap: Initializing entries in Gothic.ini.");
 
+    if (!MEM_GothOptExists("ITEMMAP", "radius")) {
+        MEM_SetGothOpt("ITEMMAP", "radius", "-1");
+    };
     if (!MEM_GothOptExists("ITEMMAP", "minValue")) {
         MEM_SetGothOpt("ITEMMAP", "minValue", "0");
     };
+    Ninja_ItemMap_Radius = STR_ToInt(MEM_GetGothOpt("ITEMMAP", "radius"));
     Ninja_ItemMap_MinValue = STR_ToInt(MEM_GetGothOpt("ITEMMAP", "minValue"));
     Ninja_ItemMap_Colors[0] = Ninja_ItemMap_ReadColor("combat", Ninja_ItemMap_Colors[0]);
     Ninja_ItemMap_Colors[1] = Ninja_ItemMap_ReadColor("armor",  Ninja_ItemMap_Colors[1]);
@@ -27,6 +31,11 @@ func void Ninja_ItemMap_Menu() {
     Ninja_ItemMap_Colors[6] = Ninja_ItemMap_ReadColor("docs",   Ninja_ItemMap_Colors[6]);
     Ninja_ItemMap_Colors[7] = Ninja_ItemMap_ReadColor("other",  Ninja_ItemMap_Colors[7]);
     Ninja_ItemMap_Colors[8] = Ninja_ItemMap_ReadColor("chest",  Ninja_ItemMap_Colors[8]);
+
+    // Already square the distance
+    if (Ninja_ItemMap_Radius > 0) {
+        Ninja_ItemMap_Radius = Ninja_ItemMap_Radius * Ninja_ItemMap_Radius;
+    };
 
     // Additional speed-up
     Ninja_ItemMap_TexNamePtr = _@s(Ninja_ItemMap_TexName);

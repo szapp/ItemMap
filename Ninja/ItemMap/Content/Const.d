@@ -10,6 +10,9 @@ const int    Ninja_ItemMap_MarkerSize = 8;
 /* Minimum item value (default) */
 const int    Ninja_ItemMap_MinValue   = 0;
 
+/* Maximum item radius (default) */
+const int    Ninja_ItemMap_Radius     = -1;
+
 /* Color table (defaults) */
 const int    Ninja_ItemMap_NumItemCat = 8; // INV_CAT_MAX-1
 const int    Ninja_ItemMap_NumColors  = Ninja_ItemMap_NumItemCat+1;

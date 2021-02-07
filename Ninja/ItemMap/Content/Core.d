@@ -173,6 +173,9 @@ func void Ninja_ItemMap_AddItems() {
 
     // Get hero to obtain current map item later
     var oCNpc her; her = Hlp_GetNpc(hero);
+    var int herPos[2]; var int diff[2];
+    herPos[0] = truncf(her._zCVob_trafoObjToWorld[ 3]) / 100;
+    herPos[1] = truncf(her._zCVob_trafoObjToWorld[11]) / 100;
 
     // Obtain items
     var int arrPtr; arrPtr = Ninja_ItemMap_GetItems(MEMINT_SwitchG1G2(oCItem__classDef_G1, oCItem__classDef_G2), 0);
@@ -213,6 +216,16 @@ func void Ninja_ItemMap_AddItems() {
             var int itmPos[2];
             itmPos[0] = itm._zCVob_trafoObjToWorld[ 3];
             itmPos[1] = itm._zCVob_trafoObjToWorld[11];
+
+            // Exclude by distance
+            if (Ninja_ItemMap_Radius > 0) {
+                diff[0] = truncf(itmPos[0])/100 - herPos[0];
+                diff[1] = truncf(itmPos[1])/100 - herPos[1];
+                diff = diff[0] * diff[0] + diff[1] * diff[1];
+                if (diff > Ninja_ItemMap_Radius) {
+                    continue;
+                };
+            };
 
             // Calculate map position
             if (GOTHIC_BASE_VERSION == 1) {
@@ -255,6 +268,16 @@ func void Ninja_ItemMap_AddItems() {
                 var int containerPos[2];
                 containerPos[0] = container._zCVob_trafoObjToWorld[ 3];
                 containerPos[1] = container._zCVob_trafoObjToWorld[11];
+
+                // Exclude by distance
+                if (Ninja_ItemMap_Radius > 0) {
+                    diff[0] = truncf(containerPos[0])/100 - herPos[0];
+                    diff[1] = truncf(containerPos[1])/100 - herPos[1];
+                    diff = diff[0] * diff[0] + diff[1] * diff[1];
+                    if (diff > Ninja_ItemMap_Radius) {
+                        continue;
+                    };
+                };
 
                 // Calculate map position
                 if (GOTHIC_BASE_VERSION == 1) {
