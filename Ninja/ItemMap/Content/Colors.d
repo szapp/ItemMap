@@ -1,8 +1,8 @@
 /*
  * Determine a color by item type
  */
-func int Ninja_ItemMap_GetItemColor(var int mainflag) {
-    const int categories[Ninja_ItemMap_NumItemCat] = {
+func int Patch_ItemMap_GetItemColor(var int mainflag) {
+    const int categories[Patch_ItemMap_NumItemCat] = {
         /*ITEM_KAT_NF*/      (1 <<  1) | /*ITEM_KAT_FF*/ (1 << 2) | /*ITEM_KAT_MUN*/ (1 << 3), // INV_WEAPON  COMBAT
         /*ITEM_KAT_ARMOR*/   (1 <<  4),                                                        // INV_ARMOR   ARMOR
         /*ITEM_KAT_RUNE*/    (1 <<  9),                                                        // INV_RUNE    RUNE
@@ -14,9 +14,9 @@ func int Ninja_ItemMap_GetItemColor(var int mainflag) {
     };
 
     // Match category
-    repeat(i, Ninja_ItemMap_NumItemCat); var int i;
+    repeat(i, Patch_ItemMap_NumItemCat); var int i;
         if (mainflag & MEM_ReadStatArr(_@(categories), i)) {
-            return MEM_ReadStatArr(_@(Ninja_ItemMap_Colors), i);
+            return MEM_ReadStatArr(_@(Patch_ItemMap_Colors), i);
         };
     end;
 
@@ -28,7 +28,7 @@ func int Ninja_ItemMap_GetItemColor(var int mainflag) {
  * Fix function from Ikarus: Based on MEMINT_ByteToKeyHex
  * Taken from https://forum.worldofplayers.de/forum/threads/?p=25717007
  */
-func string Ninja_ItemMap_Byte2hex(var int byte) {
+func string Patch_ItemMap_Byte2hex(var int byte) {
     const int ASCII_0 = 48;
     const int ASCII_A = 65;
     byte = byte & 255;
@@ -50,7 +50,7 @@ func string Ninja_ItemMap_Byte2hex(var int byte) {
     MEM_WriteByte(mem + 1, c2 + ASCII_0);
     return STR_FromChar(mem);
 };
-func int Ninja_ItemMap_Hex2Bytes(var int c) {
+func int Patch_ItemMap_Hex2Bytes(var int c) {
     const int ASCII_Ac = 65;
     const int ASCII_a = 97;
     const int ASCII_0 = 48;
@@ -69,7 +69,7 @@ func int Ninja_ItemMap_Hex2Bytes(var int c) {
 /*
  * Read/write color values from/to Gothic.ini
  */
-func int Ninja_ItemMap_ReadColor(var string value, var int default) {
+func int Patch_ItemMap_ReadColor(var string value, var int default) {
     var string entry; entry = MEM_GetGothOpt("ITEMMAP", value);
     var zString str; str = _^(_@s(entry));
 
@@ -85,21 +85,21 @@ func int Ninja_ItemMap_ReadColor(var string value, var int default) {
             entry = "FALSE";
         } else {
             entry = "#";
-            entry = ConcatStrings(entry, Ninja_ItemMap_Byte2hex(default>>16));
-            entry = ConcatStrings(entry, Ninja_ItemMap_Byte2hex(default>>8));
-            entry = ConcatStrings(entry, Ninja_ItemMap_Byte2hex(default));
+            entry = ConcatStrings(entry, Patch_ItemMap_Byte2hex(default>>16));
+            entry = ConcatStrings(entry, Patch_ItemMap_Byte2hex(default>>8));
+            entry = ConcatStrings(entry, Patch_ItemMap_Byte2hex(default));
         };
         MEM_SetGothOpt("ITEMMAP", value, entry);
         return default;
     };
 
     var int res; res = 0;
-    res += Ninja_ItemMap_Hex2Bytes(MEM_ReadByte(str.ptr + 1)) << 20;
-    res += Ninja_ItemMap_Hex2Bytes(MEM_ReadByte(str.ptr + 2)) << 16;
-    res += Ninja_ItemMap_Hex2Bytes(MEM_ReadByte(str.ptr + 3)) << 12;
-    res += Ninja_ItemMap_Hex2Bytes(MEM_ReadByte(str.ptr + 4)) << 8;
-    res += Ninja_ItemMap_Hex2Bytes(MEM_ReadByte(str.ptr + 5)) << 4;
-    res += Ninja_ItemMap_Hex2Bytes(MEM_ReadByte(str.ptr + 6));
+    res += Patch_ItemMap_Hex2Bytes(MEM_ReadByte(str.ptr + 1)) << 20;
+    res += Patch_ItemMap_Hex2Bytes(MEM_ReadByte(str.ptr + 2)) << 16;
+    res += Patch_ItemMap_Hex2Bytes(MEM_ReadByte(str.ptr + 3)) << 12;
+    res += Patch_ItemMap_Hex2Bytes(MEM_ReadByte(str.ptr + 4)) << 8;
+    res += Patch_ItemMap_Hex2Bytes(MEM_ReadByte(str.ptr + 5)) << 4;
+    res += Patch_ItemMap_Hex2Bytes(MEM_ReadByte(str.ptr + 6));
 
     return res;
 };

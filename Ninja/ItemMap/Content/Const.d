@@ -1,22 +1,22 @@
 /* Toggle state */
-var   int    Ninja_ItemMap_State;
+var   int    Patch_ItemMap_State;
 
 /* Marker texture name and pointer (cache) */
-const string Ninja_ItemMap_TexName    = "NINJA_ITEMMAP_MARKER.TGA";
-const int    Ninja_ItemMap_TexNamePtr = 0;
-const int    Ninja_ItemMap_CoordShift = 0;
-const int    Ninja_ItemMap_MarkerSize = 8;
+const string Patch_ItemMap_TexName    = "PATCH_ITEMMAP_MARKER.TGA";
+const int    Patch_ItemMap_TexNamePtr = 0;
+const int    Patch_ItemMap_CoordShift = 0;
+const int    Patch_ItemMap_MarkerSize = 8;
 
 /* Minimum item value (default) */
-const int    Ninja_ItemMap_MinValue   = 0;
+const int    Patch_ItemMap_MinValue   = 0;
 
 /* Maximum item radius (default) */
-const int    Ninja_ItemMap_Radius     = -1;
+const int    Patch_ItemMap_Radius     = -1;
 
 /* Color table (defaults) */
-const int    Ninja_ItemMap_NumItemCat = 8; // INV_CAT_MAX-1
-const int    Ninja_ItemMap_NumColors  = Ninja_ItemMap_NumItemCat+1;
-const int    Ninja_ItemMap_Colors[Ninja_ItemMap_NumColors] = {
+const int    Patch_ItemMap_NumItemCat = 8; // INV_CAT_MAX-1
+const int    Patch_ItemMap_NumColors  = Patch_ItemMap_NumItemCat+1;
+const int    Patch_ItemMap_Colors[Patch_ItemMap_NumColors] = {
     14826792, // COMBAT #E23D28 red
     16744192, // ARMOR  #FF7F00 orange
     16515324, // RUNE   #FC00FC purple

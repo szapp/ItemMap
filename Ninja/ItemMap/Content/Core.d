@@ -1,7 +1,7 @@
 /*
  * Find all items in the current world
  */
-func int Ninja_ItemMap_GetItems(var int classDef, var int arrPtr) {
+func int Patch_ItemMap_GetItems(var int classDef, var int arrPtr) {
     const int zCWorld__SearchVobListByBaseClass_G1 = 6250016; //0x5F5E20
     const int zCWorld__SearchVobListByBaseClass_G2 = 6439712; //0x624320
 
@@ -27,7 +27,7 @@ func int Ninja_ItemMap_GetItems(var int classDef, var int arrPtr) {
 /*
  * Draw a marker into the parent document
  */
-func void Ninja_ItemMap_DrawObject(var int parentPtr, var int x, var int y, var int color) {
+func void Patch_ItemMap_DrawObject(var int parentPtr, var int x, var int y, var int color) {
     const int zCViewFX__Init_G1                 = 7684128; //0x754020
     const int zCViewFX__Init_G2                 = 6884192; //0x690B60
     const int zCViewObject__SetPixelSize_G1     = 7689744; //0x755610
@@ -44,7 +44,7 @@ func void Ninja_ItemMap_DrawObject(var int parentPtr, var int x, var int y, var 
     const int oCViewDocument__SetTexture_G2     = 6868272; //0x68CD30
 
     // Arguments for the following function calls
-    var int open; open = !Ninja_ItemMap_State;
+    var int open; open = !Patch_ItemMap_State;
     const int effect = 1; // Zoom
     const int duration = 1133903872; // 300.0f
     const int colorPtr = 0;
@@ -53,13 +53,13 @@ func void Ninja_ItemMap_DrawObject(var int parentPtr, var int x, var int y, var 
 
     // Marker size
     var int size[2];
-    size[0] = Ninja_ItemMap_MarkerSize;
-    size[1] = Ninja_ItemMap_MarkerSize;
+    size[0] = Patch_ItemMap_MarkerSize;
+    size[1] = Patch_ItemMap_MarkerSize;
 
     // Centered
     var int pos[2];
-    pos[0] = x - Ninja_ItemMap_MarkerSize/2;
-    pos[1] = y - Ninja_ItemMap_MarkerSize/2;
+    pos[0] = x - Patch_ItemMap_MarkerSize/2;
+    pos[1] = y - Patch_ItemMap_MarkerSize/2;
 
     // Create new oCViewDocument object
     var int viewPtr; viewPtr = MEM_Alloc(252);
@@ -73,7 +73,7 @@ func void Ninja_ItemMap_DrawObject(var int parentPtr, var int x, var int y, var 
         CALL__thiscall(_@(viewPtr), MEMINT_SwitchG1G2(oCViewDocument__oCViewDocument_G1,
                                                       oCViewDocument__oCViewDocument_G2));
 
-        CALL_PtrParam(_@(Ninja_ItemMap_TexNamePtr));
+        CALL_PtrParam(_@(Patch_ItemMap_TexNamePtr));
         CALL_IntParam(_@(duration));
         CALL_IntParam(_@(duration));
         CALL_IntParam(_@(effect));
@@ -82,7 +82,7 @@ func void Ninja_ItemMap_DrawObject(var int parentPtr, var int x, var int y, var 
         CALL__fastcall(_@(viewPtr), _@(parentPtr), MEMINT_SwitchG1G2(zCViewFX__Init_G1, zCViewFX__Init_G2));
 
         CALL_IntParam(_@(FALSE));
-        CALL__fastcall(_@(viewPtr), _@(Ninja_ItemMap_TexNamePtr), MEMINT_SwitchG1G2(oCViewDocument__SetTexture_G1,
+        CALL__fastcall(_@(viewPtr), _@(Patch_ItemMap_TexNamePtr), MEMINT_SwitchG1G2(oCViewDocument__SetTexture_G1,
                                                                                     oCViewDocument__SetTexture_G2));
 
         CALL__fastcall(_@(viewPtr), _@(colorPtr), MEMINT_SwitchG1G2(zCViewDraw__SetTextureColor_G1,
@@ -115,14 +115,14 @@ func void Ninja_ItemMap_DrawObject(var int parentPtr, var int x, var int y, var 
 /*
  * Find items/containers and draw them onto the map
  */
-func void Ninja_ItemMap_AddItems() {
+func void Patch_ItemMap_AddItems() {
     const int oCItem__classDef_G1         =  9284224; //0x8DAA80
     const int oCItem__classDef_G2         = 11211112; //0xAB1168
     const int oCMobContainer__classDef_G1 =  9285504; //0x8DAF80
     const int oCMobContainer__classDef_G2 = 11212976; //0xAB18B0
 
     // If state is hidden, do not draw them yet
-    if (Ninja_ItemMap_State) {
+    if (Patch_ItemMap_State) {
         return;
     };
 
@@ -178,7 +178,7 @@ func void Ninja_ItemMap_AddItems() {
     herPos[1] = truncf(her._zCVob_trafoObjToWorld[11]) / 100;
 
     // Obtain items
-    var int arrPtr; arrPtr = Ninja_ItemMap_GetItems(MEMINT_SwitchG1G2(oCItem__classDef_G1, oCItem__classDef_G2), 0);
+    var int arrPtr; arrPtr = Patch_ItemMap_GetItems(MEMINT_SwitchG1G2(oCItem__classDef_G1, oCItem__classDef_G2), 0);
 
     // Iterate over items and add them to the map
     repeat(i, MEM_ArraySize(arrPtr)); var int i;
@@ -192,7 +192,7 @@ func void Ninja_ItemMap_AddItems() {
             var oCItem itm; itm = _^(itmPtr);
 
             // Skip items of low value
-            if (itm.value < Ninja_ItemMap_MinValue) {
+            if (itm.value < Patch_ItemMap_MinValue) {
                 continue;
             };
 
@@ -207,7 +207,7 @@ func void Ninja_ItemMap_AddItems() {
             };
 
             // Determine color (or exclude)
-            color = Ninja_ItemMap_GetItemColor(itm.mainflag);
+            color = Patch_ItemMap_GetItemColor(itm.mainflag);
             if (color == (255<<24)) {
                 continue;
             };
@@ -218,11 +218,11 @@ func void Ninja_ItemMap_AddItems() {
             itmPos[1] = itm._zCVob_trafoObjToWorld[11];
 
             // Exclude by distance
-            if (Ninja_ItemMap_Radius > 0) {
+            if (Patch_ItemMap_Radius > 0) {
                 diff[0] = truncf(itmPos[0])/100 - herPos[0];
                 diff[1] = truncf(itmPos[1])/100 - herPos[1];
                 diff = diff[0] * diff[0] + diff[1] * diff[1];
-                if (diff > Ninja_ItemMap_Radius) {
+                if (diff > Patch_ItemMap_Radius) {
                     continue;
                 };
             };
@@ -237,23 +237,23 @@ func void Ninja_ItemMap_AddItems() {
             };
 
             // Account for displacement in the coordinates
-            x += Ninja_ItemMap_CoordShift;
-            y += Ninja_ItemMap_CoordShift;
+            x += Patch_ItemMap_CoordShift;
+            y += Patch_ItemMap_CoordShift;
 
             // Create new view and place it on the map
-            Ninja_ItemMap_DrawObject(mapViewPtr, x, y, color);
+            Patch_ItemMap_DrawObject(mapViewPtr, x, y, color);
         };
     end;
 
     // Check if also containers are requested
-    if (Ninja_ItemMap_Colors[8] != (255<<24)) {
+    if (Patch_ItemMap_Colors[8] != (255<<24)) {
         // Collect all containers in the world
         MEM_ArrayClear(arrPtr);
-        arrPtr = Ninja_ItemMap_GetItems(MEMINT_SwitchG1G2(oCMobContainer__classDef_G1,
+        arrPtr = Patch_ItemMap_GetItems(MEMINT_SwitchG1G2(oCMobContainer__classDef_G1,
                                                           oCMobContainer__classDef_G2), arrPtr);
 
         // Iterate over containers and add them to the map
-        color = Ninja_ItemMap_Colors[8];
+        color = Patch_ItemMap_Colors[8];
         repeat(i, MEM_ArraySize(arrPtr));
             var int containerPtr; containerPtr = MEM_ArrayRead(arrPtr, i);
             if (Hlp_Is_oCMobContainer(containerPtr)) {
@@ -270,11 +270,11 @@ func void Ninja_ItemMap_AddItems() {
                 containerPos[1] = container._zCVob_trafoObjToWorld[11];
 
                 // Exclude by distance
-                if (Ninja_ItemMap_Radius > 0) {
+                if (Patch_ItemMap_Radius > 0) {
                     diff[0] = truncf(containerPos[0])/100 - herPos[0];
                     diff[1] = truncf(containerPos[1])/100 - herPos[1];
                     diff = diff[0] * diff[0] + diff[1] * diff[1];
-                    if (diff > Ninja_ItemMap_Radius) {
+                    if (diff > Patch_ItemMap_Radius) {
                         continue;
                     };
                 };
@@ -289,11 +289,11 @@ func void Ninja_ItemMap_AddItems() {
                 };
 
                 // Account for displacement in the coordinates
-                x += Ninja_ItemMap_CoordShift;
-                y += Ninja_ItemMap_CoordShift;
+                x += Patch_ItemMap_CoordShift;
+                y += Patch_ItemMap_CoordShift;
 
                 // Create new view and place it on the map
-                Ninja_ItemMap_DrawObject(mapViewPtr, x, y, color);
+                Patch_ItemMap_DrawObject(mapViewPtr, x, y, color);
             };
         end;
     };
@@ -305,7 +305,7 @@ func void Ninja_ItemMap_AddItems() {
  * Obtain the size of the player position marker (only called once, therefore no recyclable calls)
  * This functions helps to deal with the incorrectly centered player position marker
  */
-func int Ninja_ItemMap_GetTexSize(var string texture) {
+func int Patch_ItemMap_GetTexSize(var string texture) {
     const int zCTexture__Load_G1           = 6064880; //0x5C8AF0
     const int zCTexture__Load_G2           = 6239904; //0x5F36A0
     const int zCTexture__GetPixelSize_G1   = 6081488; //0x5CCBD0
@@ -337,9 +337,9 @@ func int Ninja_ItemMap_GetTexSize(var string texture) {
     var int ret;
     return +ret;
 };
-func int Ninja_ItemMap_GetPositionMarkerSize() {
-    return Ninja_ItemMap_GetTexSize("L.TGA");
+func int Patch_ItemMap_GetPositionMarkerSize() {
+    return Patch_ItemMap_GetTexSize("L.TGA");
 };
-func int Ninja_ItemMap_GetItemMarkerSize() {
-    return Ninja_ItemMap_GetTexSize(Ninja_ItemMap_TexName);
+func int Patch_ItemMap_GetItemMarkerSize() {
+    return Patch_ItemMap_GetTexSize(Patch_ItemMap_TexName);
 };
