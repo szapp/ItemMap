@@ -9,7 +9,7 @@ func void Ninja_ItemMap_Menu() {
     };
     once = 1;
 
-    // This code is only reached once: Do one-time initializations here
+    // This code is only reached once: Do one-time initialization here
     MEM_InitAll();
 
     MEM_Info("ItemMap: Initializing entries in Gothic.ini.");
@@ -37,33 +37,19 @@ func void Ninja_ItemMap_Menu() {
         Patch_ItemMap_Radius = Patch_ItemMap_Radius * Patch_ItemMap_Radius;
     };
 
-    // Additional speed-up
-    Patch_ItemMap_TexNamePtr = _@s(Patch_ItemMap_TexName);
-
     // Obtain player marker texture displacement for shifting the markers
     Patch_ItemMap_CoordShift = Patch_ItemMap_GetPositionMarkerSize() / 2;
 
     // Obtain item marker size
     Patch_ItemMap_MarkerSize = roundf(mulf(mkf(Patch_ItemMap_GetItemMarkerSize()), Bar_GetInterfaceScaling()));
-};
 
-/*
- * Initialization function called by Ninja after "Init_Global" (G2) / "Init_<Levelname>" (G1)
- */
-func void Ninja_ItemMap_Init() {
-    // Initialize Ikarus
-    MEM_InitAll();
-
-    const int oCDocumentManager__HandleEvent_G1              = 7490873; //0x724D39
-    const int oCDocumentManager__HandleEvent_G2              = 6681689; //0x65F459
-    const int oCViewDocumentMap__UpdatePosition_drawItems_G1 = 7495977; //0x726129
-    const int oCViewDocumentMap__UpdatePosition_drawItems_G2 = 6871204; //0x68D8A4
+    // Place hooks
+    const int oCDocumentManager__HandleEvent_start[4]  = {/*G1*/7490873, /*G1A*/7740553, /*G2*/7802633, /*G2A*/6681689};
+    const int oCViewDocumentMap__UpdatePosition_drw[4] = {/*G1*/7495977, /*G1A*/7747210, /*G2*/7809140, /*G2A*/6871204};
 
     // Place hook on updating the map
-    HookEngineF(MEMINT_SwitchG1G2(oCViewDocumentMap__UpdatePosition_drawItems_G1,
-                                  oCViewDocumentMap__UpdatePosition_drawItems_G2), 7, Patch_ItemMap_AddItems);
+    HookEngineF(oCViewDocumentMap__UpdatePosition_drw[IDX_EXE], 7, Patch_ItemMap_AddItems);
 
     // Place hook on key events
-    HookEngineF(MEMINT_SwitchG1G2(oCDocumentManager__HandleEvent_G1,
-                                  oCDocumentManager__HandleEvent_G2), 6, Patch_ItemMap_HandleEvent);
+    HookEngineF(oCDocumentManager__HandleEvent_start[IDX_EXE],  6, Patch_ItemMap_HandleEvent);
 };

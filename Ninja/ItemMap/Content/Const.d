@@ -1,9 +1,8 @@
 /* Toggle state */
-var   int    Patch_ItemMap_State;
+var   int    Patch_ItemMap_State; // Kept across saving and loading, 1 = hidden
 
-/* Marker texture name and pointer (cache) */
+/* Marker texture name and size (cache) */
 const string Patch_ItemMap_TexName    = "PATCH_ITEMMAP_MARKER.TGA";
-const int    Patch_ItemMap_TexNamePtr = 0;
 const int    Patch_ItemMap_CoordShift = 0;
 const int    Patch_ItemMap_MarkerSize = 8;
 
