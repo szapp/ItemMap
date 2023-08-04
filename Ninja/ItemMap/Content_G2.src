@@ -4,5 +4,6 @@ LeGo
 Content\Const.d
 Content\Colors.d
 Content\Toggle.d
-Content\Core.d
-Content\NinjaInit.d
+Content\Draw.d
+Content\Collect.d
+Content\Init.d
