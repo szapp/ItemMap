@@ -1,4 +1,14 @@
 /*
+ * This file is part of ItemMap.
+ * Copyright (C) 2020-2024  Sören Zapp
+ *
+ * ItemMap is free software: you can redistribute it and/or
+ * modify it under the terms of the MIT License.
+ * On redistribution this notice must remain intact and all copies must
+ * identify the original author.
+ */
+
+/*
  * Menu initialization function called by Ninja every time a menu is opened
  */
 func void Ninja_ItemMap_Menu() {

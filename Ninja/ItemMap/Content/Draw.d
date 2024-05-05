@@ -1,4 +1,14 @@
 /*
+ * This file is part of ItemMap.
+ * Copyright (C) 2020-2024  Sören Zapp
+ *
+ * ItemMap is free software: you can redistribute it and/or
+ * modify it under the terms of the MIT License.
+ * On redistribution this notice must remain intact and all copies must
+ * identify the original author.
+ */
+
+/*
  * Draw a marker into the parent document
  */
 func void Patch_ItemMap_DrawObject(var int parentPtr, var int x, var int y, var int color) {

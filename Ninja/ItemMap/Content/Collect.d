@@ -1,4 +1,14 @@
 /*
+ * This file is part of ItemMap.
+ * Copyright (C) 2020-2024  Sören Zapp
+ *
+ * ItemMap is free software: you can redistribute it and/or
+ * modify it under the terms of the MIT License.
+ * On redistribution this notice must remain intact and all copies must
+ * identify the original author.
+ */
+
+/*
  * Find all items in the current world
  */
 func int Patch_ItemMap_GetItems(var int classDef, var int arrPtr) {
