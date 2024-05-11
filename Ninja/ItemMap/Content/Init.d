@@ -58,8 +58,8 @@ func void Ninja_ItemMap_Menu() {
     const int oCViewDocumentMap__UpdatePosition_drw[4] = {/*G1*/7495977, /*G1A*/7747210, /*G2*/7809140, /*G2A*/6871204};
 
     // Place hook on updating the map
-    HookEngineF(oCViewDocumentMap__UpdatePosition_drw[IDX_EXE], 7, Patch_ItemMap_AddItems);
+    HookEngineF(oCViewDocumentMap__UpdatePosition_drw[ItemMap_EXE], 7, Patch_ItemMap_AddItems);
 
     // Place hook on key events
-    HookEngineF(oCDocumentManager__HandleEvent_start[IDX_EXE],  6, Patch_ItemMap_HandleEvent);
+    HookEngineF(oCDocumentManager__HandleEvent_start[ItemMap_EXE],  6, Patch_ItemMap_HandleEvent);
 };

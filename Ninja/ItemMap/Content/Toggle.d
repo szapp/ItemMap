@@ -32,10 +32,10 @@ func void Patch_ItemMap_Toggle(var int docPtr, var int turnOn) {
     if (!call) {
         // Assembly for performance (check scripts of previous versions to find analogous Daedalus code)
         const int call  = 0;
-        const int open  = zCViewFX__OpenSafe[IDX_EXE]; // Shorthands
-        const int close = zCViewFX__CloseSafe[IDX_EXE];
-        const int ofast = zCViewFX__OpenImmediately[IDX_EXE];
-        const int cfast = zCViewFX__CloseImmediately[IDX_EXE];
+        const int open  = zCViewFX__OpenSafe[ItemMap_EXE]; // Shorthands
+        const int close = zCViewFX__CloseSafe[ItemMap_EXE];
+        const int ofast = zCViewFX__OpenImmediately[ItemMap_EXE];
+        const int cfast = zCViewFX__CloseImmediately[ItemMap_EXE];
         ASM_Open(80);
         ASM_1(96);                               // pusha
         ASM_2(15755); ASM_4(_@(list));           // mov   edi, [list]                ; zCListSort*
@@ -76,7 +76,7 @@ func void Patch_ItemMap_Toggle(var int docPtr, var int turnOn) {
         // Update/place the document markers
         if (CALL_Begin(call2)) {
             const int call2 = 0;
-            CALL__fastcall(_@(docPtr), _@(FALSE), oCViewDocumentMap__UpdatePosition[IDX_EXE]);
+            CALL__fastcall(_@(docPtr), _@(FALSE), oCViewDocumentMap__UpdatePosition[ItemMap_EXE]);
             call2 = CALL_End();
         };
     };
@@ -109,7 +109,7 @@ func int Patch_ItemMap_KeyBindingIsToggled(var int keyBinding, var int keyStroke
             CALL_IntParam(_@(keyStroke));
             CALL_IntParam(_@(keyBinding));
             CALL_PutRetValTo(_@(ret));
-            CALL__thiscall(zCInput_zinput, zCInput__IsBindedToggled[IDX_EXE]);
+            CALL__thiscall(zCInput_zinput, zCInput__IsBindedToggled[ItemMap_EXE]);
         };
         call = CALL_End();
     };
@@ -134,7 +134,7 @@ func void Patch_ItemMap_HandleEvent() {
         while(docList);
             l = _^(docList);
             // Only for map documents
-            if (MEM_ReadInt(l.data) == oCViewDocumentMap__vtbl[IDX_EXE]) {
+            if (MEM_ReadInt(l.data) == oCViewDocumentMap__vtbl[ItemMap_EXE]) {
                 Patch_ItemMap_Toggle(l.data, !Patch_ItemMap_State);
             };
             docList = l.next;

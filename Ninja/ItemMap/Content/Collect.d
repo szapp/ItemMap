@@ -25,7 +25,7 @@ func int Patch_ItemMap_GetItems(var int classDef, var int arrPtr) {
         CALL_PtrParam(_@(vobTreePtr));
         CALL_PtrParam(_@(arrPtr));
         CALL_PtrParam(_@(classDef));
-        CALL__thiscall(_@(worldPtr), zCWorld__SearchVobListByBaseClass[IDX_EXE]);
+        CALL__thiscall(_@(worldPtr), zCWorld__SearchVobListByBaseClass[ItemMap_EXE]);
         call = CALL_End();
     };
 
@@ -104,7 +104,7 @@ func void Patch_ItemMap_AddItems() {
     herPos[1] = truncf(her._zCVob_trafoObjToWorld[11]) / 100;
 
     // Obtain items
-    var int arrPtr; arrPtr = Patch_ItemMap_GetItems(oCItem__classDef[IDX_EXE], 0);
+    var int arrPtr; arrPtr = Patch_ItemMap_GetItems(oCItem__classDef[ItemMap_EXE], 0);
 
     // Iterate over items and add them to the map
     repeat(i, MEM_ArraySize(arrPtr)); var int i;
@@ -175,7 +175,7 @@ func void Patch_ItemMap_AddItems() {
     if (Patch_ItemMap_Colors[COL_CHEST] != COL_INVALID) {
         // Collect all containers in the world
         MEM_ArrayClear(arrPtr);
-        arrPtr = Patch_ItemMap_GetItems(oCMobContainer__classDef[IDX_EXE], arrPtr);
+        arrPtr = Patch_ItemMap_GetItems(oCMobContainer__classDef[ItemMap_EXE], arrPtr);
 
         // Iterate over containers and add them to the map
         color = Patch_ItemMap_Colors[COL_CHEST];

@@ -63,7 +63,7 @@ func void Patch_ItemMap_DrawObject(var int parentPtr, var int x, var int y, var 
         CALL_IntParam(_@(sizeof_oCViewDocument));
         CALL_PutRetValTo(_@(viewPtr));
         CALL__cdecl(malloc_adr);
-        CALL__thiscall(_@(viewPtr), oCViewDocument__oCViewDocument[IDX_EXE]);
+        CALL__thiscall(_@(viewPtr), oCViewDocument__oCViewDocument[ItemMap_EXE]);
 
         // Attach to parent view
         CALL_PtrParam(_@(emptyStrPtr));
@@ -72,16 +72,16 @@ func void Patch_ItemMap_DrawObject(var int parentPtr, var int x, var int y, var 
         CALL_IntParam(_@(effect));
         CALL_IntParam(_@(effect));
         CALL_IntParam(_@(FALSE));
-        CALL__fastcall(_@(viewPtr), _@(parentPtr), zCViewFX__Init[IDX_EXE]);
+        CALL__fastcall(_@(viewPtr), _@(parentPtr), zCViewFX__Init[ItemMap_EXE]);
 
         // Adjust size, position, texture, and color
-        CALL__fastcall(_@(viewPtr), _@(sizePtr), zCViewObject__SetPixelSize[IDX_EXE]);
-        CALL__fastcall(_@(viewPtr), _@(posPtr),  zCViewObject__SetPixelPosition[IDX_EXE]);
-        CALL__fastcall(_@(viewPtr), _@(texStrPtr), zCViewDraw__SetTexture[IDX_EXE]);
-        CALL__fastcall(_@(viewPtr), _@(colorPtr),  zCViewDraw__SetTextureColor[IDX_EXE]);
+        CALL__fastcall(_@(viewPtr), _@(sizePtr), zCViewObject__SetPixelSize[ItemMap_EXE]);
+        CALL__fastcall(_@(viewPtr), _@(posPtr),  zCViewObject__SetPixelPosition[ItemMap_EXE]);
+        CALL__fastcall(_@(viewPtr), _@(texStrPtr), zCViewDraw__SetTexture[ItemMap_EXE]);
+        CALL__fastcall(_@(viewPtr), _@(colorPtr),  zCViewDraw__SetTextureColor[ItemMap_EXE]);
 
         // Open delayed
-        CALL__fastcall(_@(viewPtr), _@(FALSE), zCViewFX__OpenSafe[IDX_EXE]);
+        CALL__fastcall(_@(viewPtr), _@(FALSE), zCViewFX__OpenSafe[ItemMap_EXE]);
 
         // Release; it's in its parent's hands now
         ASM_2(50307); ASM_1(8);           // add   esp, 0x8         ; Pop stack (see above)
@@ -112,19 +112,19 @@ func int Patch_ItemMap_GetTexSize(var string texture) {
     CALL_IntParam(1); // Loading flag
     CALL_zStringPtrParam(texture);
     CALL_PutRetValTo(_@(texPtr));
-    CALL__cdecl(zCTexture__Load[IDX_EXE]);
+    CALL__cdecl(zCTexture__Load[ItemMap_EXE]);
 
     // Retrieve its dimensions
     CALL_PtrParam(_@(ret));
     CALL_PtrParam(_@(ret));
-    CALL__thiscall(texPtr, zCTexture__GetPixelSize[IDX_EXE]);
+    CALL__thiscall(texPtr, zCTexture__GetPixelSize[ItemMap_EXE]);
 
     // Dereference (and possibly delete) the texture again
     var zCObject obj; obj = _^(texPtr);
     obj.refCtr -= 1;
     if (obj.refCtr <= 0) {
         CALL_IntParam(1);
-        CALL__thiscall(texPtr, zCTexture__scal_del_destr[IDX_EXE]);
+        CALL__thiscall(texPtr, zCTexture__scal_del_destr[ItemMap_EXE]);
     };
 
     var int ret;
